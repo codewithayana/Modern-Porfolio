@@ -21,18 +21,18 @@ const HeroIntro: React.FC = () => {
   });
 
   const delayedProgress = useSpring(smoothProgress, {
-  stiffness: 40,
-  damping: 20
+  stiffness: 70, // Increased from 40 to reduce lag
+  damping: 30
 });
 
   // 🎥 CAMERA movement (horizontal) - Moves from screen 1 to screen 2
-  const sceneX = useTransform(smoothProgress, [0, 1], ["0vw", "-100vw"]);
+  const sceneX = useTransform(smoothProgress, [0, 0.6], ["0vw", "-100vw"]);
 
   // 🏹 Arrow movement (SYNCED!)
   let arrowXRaw = useTransform(
   smoothProgress,
-  [0.2, 0.5, 0.9],   // 👈 longer range
-  [10,100,174]
+  [0.1, 0.45, 0.6],   // 👈 starts moving at 10% scroll
+  [10, 100, 174]
 );
 let  arrowX = useSpring(arrowXRaw, {
   stiffness: 105,
@@ -40,26 +40,25 @@ let  arrowX = useSpring(arrowXRaw, {
 });
   
   // Animation Mappings
-  const archerOpacity = useTransform(smoothProgress,  [0, 0.1, 0.65, 0.8],   // 👈 longer visibility
-  [0, 1, 1, 0]);
+  const archerOpacity = useTransform(smoothProgress, [0, 0.65, 0.8], [1, 1, 0]); // Always visible at start
   const bowStringX = useTransform(
   smoothProgress,
-  [0, 0.3, 0.35],
+  [0, 0.08, 0.1],     // 👈 quick pull
   [0, -40, 0]
 );
-  const bowCurve = useTransform(smoothProgress, [0, 0.25], [0, 25]);
-  const arrowOpacity = useTransform(smoothProgress, [0.1, 0.15, 0.65], [0, 1, 1]);
+  const bowCurve = useTransform(smoothProgress, [0, 0.08], [0, 25]);
+  const arrowOpacity = useTransform(smoothProgress, [0, 0.1, 0.65], [1, 1, 1]); // Always visible
 
   // Impact & Feedback
   const impactScale = useTransform(
   delayedProgress,
-  [0.9, 0.95, 1],
+  [0.58, 0.6, 0.62],
   [1, 2.5, 1]
 );
 
 const impactOpacity = useTransform(
   delayedProgress,
-  [0.9, 0.95, 1],
+  [0.58, 0.6, 0.62],
   [0, 1, 0]
 );
   const targetVibration = useTransform(smoothProgress, [0.6, 0.61, 0.62, 0.63, 0.64, 0.65], [0, -5, 5, -3, 3, 0]);
@@ -73,23 +72,23 @@ const impactOpacity = useTransform(
   // Reveal (Threshold: 0.75)
   const revealOpacity = useTransform(
   smoothProgress,
-  [0.82, 0.88, 0.95],   // 👈 delayed
+  [0.5, 0.55, 0.65],   // 👈 finishes at 65%
   [0, 0, 1]
 );
 
 const revealScale = useTransform(
   smoothProgress,
-  [0.88, 1],
+  [0.55, 0.65],
   [0.8, 1]
 );
 
 const revealY = useTransform(
   smoothProgress,
-  [0.88, 1],
+  [0.55, 0.65],
   [40, 0]
 );
 
-  const screenDarken = useTransform(smoothProgress, [0.6, 0.62, 0.68, 0.72], [0, 1, 1, 0]);
+
 
   // Cosmic Starfield Background
   const particles = useMemo(() => {
@@ -103,7 +102,10 @@ const revealY = useTransform(
   }, []);
 
   return (
-    <div ref={containerRef} className="intro relative h-[300vh] w-full bg-[#050110]">
+    <div
+  ref={containerRef}
+  className="relative h-[600vh] w-full bg-[#050110]"
+>
       {/* Sticky Viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         
@@ -249,11 +251,7 @@ const revealY = useTransform(
 
         </motion.div>
 
-        {/* Global Darken Overlay */}
-        <motion.div 
-          style={{ opacity: screenDarken }}
-          className="absolute inset-0 bg-black z-40 pointer-events-none"
-        />
+
 
         {/* Glitch Styles */}
         <style dangerouslySetInnerHTML={{ __html: `
