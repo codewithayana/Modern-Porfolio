@@ -16,7 +16,7 @@ const HeroIntro: React.FC = () => {
 
   const smoothProgress = useSpring(scrollYProgress, {
     stiffness: 100,
-    damping: 30,
+    damping: 100,
     restDelta: 0.001
   });
 
@@ -25,40 +25,55 @@ const HeroIntro: React.FC = () => {
   damping: 30
 });
 
-  // 🎥 CAMERA movement (horizontal) - Moves from screen 1 to screen 2
-  const sceneX = useTransform(smoothProgress, [0, 0.6], ["0vw", "-100vw"]);
+  // 🎥 CAMERA movement (horizontal) - Stays static during prep, then pans with the arrow
+  const sceneX = useTransform(smoothProgress, [0, 0.3, 0.6], ["0vw", "0vw", "-100vw"]);
 
-  // 🏹 Arrow movement (SYNCED!)
-  let arrowXRaw = useTransform(
-  smoothProgress,
-  [0.1, 0.45, 0.6],   // 👈 starts moving at 10% scroll
-  [10, 100, 174]
-);
-let  arrowX = useSpring(arrowXRaw, {
-  stiffness: 105,
-  damping: 30
-});
+  // 🏹 CINEMATIC STAGES MAPPING:
+  // 0.0 - 0.1: Bow Rotation & Positioning
+  // 0.1 - 0.2: Arrow Arrival & Nocking
+  // 0.2 - 0.28: String Pull (Charging)
+  // 0.3: RELEASE & FIRE
   
-  // Animation Mappings
-  const archerOpacity = useTransform(smoothProgress, [0, 0.65, 0.8], [1, 1, 0]); // Always visible at start
+  const bowRotate = useTransform(smoothProgress, [0, 0.15], [-180, 0]);
+  const bowScale = useTransform(smoothProgress, [0, 0.15], [0.3, 1]);
+
+  let arrowXRaw = useTransform(
+    smoothProgress,
+    [0, 0.15, 0.25, 0.33, 0.35, 0.5, 0.6],
+    [-20, -20, 14.5, 13.5, 14.5, 110, 174] 
+  );
+  let arrowX = useSpring(arrowXRaw, { stiffness: 105, damping: 30 });
+  
+  const arrowOpacity = useTransform(
+    smoothProgress, 
+    [0, 0.15, 0.2, 0.65], 
+    [0, 0, 1, 1]
+  );
+
+  const archerOpacity = useTransform(smoothProgress, [0, 0.65, 0.8], [1, 1, 0]);
+  
   const bowStringX = useTransform(
-  smoothProgress,
-  [0, 0.08, 0.1],     // 👈 quick pull
-  [0, -40, 0]
-);
-  const bowCurve = useTransform(smoothProgress, [0, 0.08], [0, 25]);
-  const arrowOpacity = useTransform(smoothProgress, [0, 0.1, 0.65], [1, 1, 1]); // Always visible
+    smoothProgress,
+    [0, 0.25, 0.33, 0.35],
+    [0, 0, -40, 0]
+  );
+  
+  const bowCurve = useTransform(
+    smoothProgress, 
+    [0, 0.25, 0.33, 0.35], 
+    [0, 0, 25, 0]
+  );
 
   // Impact & Feedback
   const impactScale = useTransform(
-  delayedProgress,
-  [0.58, 0.6, 0.62],
+  smoothProgress,
+  [0.6, 0.62, 0.65],
   [1, 2.5, 1]
 );
 
 const impactOpacity = useTransform(
-  delayedProgress,
-  [0.58, 0.6, 0.62],
+  smoothProgress,
+  [0.6, 0.62, 0.65],
   [0, 1, 0]
 );
   const targetVibration = useTransform(smoothProgress, [0.6, 0.61, 0.62, 0.63, 0.64, 0.65], [0, -5, 5, -3, 3, 0]);
@@ -152,32 +167,69 @@ const revealY = useTransform(
 </div>
           </div>
 
-          {/* 🏹 ARCHER - Screen 1 */}
+          {/* 🏹 PREMIUM CYBER-BOW (SVG Energy Design) */}
           <motion.div 
-            style={{ opacity: archerOpacity }}
-            className="archer absolute left-[10vw] top-1/2 -translate-y-1/2 w-48 h-96 z-10"
+            style={{ 
+              opacity: archerOpacity,
+              rotate: bowRotate,
+              scale: bowScale
+            }}
+            className="emitter absolute left-[10vw] top-1/2 -translate-y-1/2 w-64 h-96 z-10 flex items-center justify-center"
           >
-            <svg viewBox="0 0 100 200" className="w-full h-full drop-shadow-[0_0_20px_rgba(106,0,255,0.4)]">
-              <path d="M50 30 Q55 25 60 30 T60 50 Q50 60 40 50 T40 30 Z" fill="#0c041a" />
-              <path d="M45 55 L55 55 L65 130 L35 130 Z" fill="#0c041a" />
-              <path d="M40 130 L30 180 M60 130 L70 180" stroke="#0c041a" strokeWidth="10" strokeLinecap="round" />
-              <path d="M50 70 L75 70" stroke="#0c041a" strokeWidth="8" strokeLinecap="round" />
+            <svg viewBox="0 0 200 300" className="w-full h-full">
+              <defs>
+                <linearGradient id="energyLimb" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#a855f7" stopOpacity="0" />
+                  <stop offset="50%" stopColor="#a855f7" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#a855f7" stopOpacity="0" />
+                </linearGradient>
+                <filter id="energyGlow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="4" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+
+              {/* Technical HUD Brackets */}
+              <path d="M60 100 L50 100 L50 200 L60 200" fill="none" stroke="#a855f7" strokeWidth="1" opacity="0.3" />
+              <path d="M100 80 L110 80 L110 220 L100 220" fill="none" stroke="#a855f7" strokeWidth="0.5" opacity="0.2" />
+
+              {/* Energy Limbs (Curving Right toward String) */}
               <motion.path 
-                d={useTransform(bowStringX, (v) => `M50 70 L${50+v} 100`)}
-                stroke="#0c041a" strokeWidth="8" strokeLinecap="round" 
+                d={useTransform(bowCurve, [0, 25], [
+                  "M70 150 L80 40", 
+                  "M70 150 Q100 100 120 60"
+                ])}
+                fill="none" stroke="url(#energyLimb)" strokeWidth="6" strokeLinecap="round" filter="url(#energyGlow)"
               />
               <motion.path 
-                d={useTransform(bowCurve, (v) => `M75 30 Q${85+v} 100 75 170`)}
-                fill="none" stroke="#1a0b2e" strokeWidth="5" strokeLinecap="round" 
+                d={useTransform(bowCurve, [0, 25], [
+                  "M70 150 L80 260", 
+                  "M70 150 Q100 200 120 240"
+                ])}
+                fill="none" stroke="url(#energyLimb)" strokeWidth="6" strokeLinecap="round" filter="url(#energyGlow)"
               />
+
+              {/* Core Grip */}
+              <rect x="62" y="120" width="16" height="60" rx="4" fill="#1a0b2e" stroke="#a855f7" strokeWidth="1" />
+              <circle cx="70" cy="140" r="1.5" fill="#a855f7">
+                <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="70" cy="160" r="1.5" fill="#a855f7">
+                <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite" />
+              </circle>
+
+              {/* The Energy String (In Front) */}
               <motion.path 
-                d={useTransform(bowStringX, (v) => `M75 30 L${75+v} 100 L75 170`)}
-                fill="none" stroke="#4a2d7a" strokeWidth="1.5" 
+                d={useTransform(bowStringX, [0, -40], [
+                  "M100 40 L100 260", // Forward Rest
+                  "M75 40 L75 260"    // Pulled Back
+                ])}
+                fill="none" stroke="#a855f7" strokeWidth="2" filter="url(#energyGlow)"
               />
             </svg>
           </motion.div>
 
-          {/* 🏹 THE ARROW - Travel to HUD Ring */}
+          {/* 🏹 THE ARROW (Firing Right) */}
           <motion.div 
             style={{ 
               x: useTransform(arrowX, (v) => `${v}vw`), 
