@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = ['Home', 'About', 'Skills', 'Projects', 'Contact'];
+  const navItems = ['About', 'Skills', 'Projects', 'Contact'];
 
   return (
     <nav 
@@ -29,7 +29,7 @@ const Navbar: React.FC = () => {
           animate={{ opacity: 1, x: 0 }}
           className="text-2xl font-black tracking-tighter text-white"
         >
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">AD</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">Ayana</span>
         </motion.div>
 
         {/* Nav Items */}

@@ -1,8 +1,84 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import ShuffleText from '../components/ShuffleText';
 import { SiReact, SiTailwindcss, SiNodedotjs, SiExpress, SiMongodb, SiJavascript, SiGithub } from 'react-icons/si';
 import profileImg from '../assets/profile.png';
 import avatarImg from '../assets/avatar.png';
+
+const planets = [
+  {
+    name: "GitHub",
+    link: "https://github.com/codewithayana",
+    color: "#c9d1d9",
+  },
+  {
+    name: "LeetCode",
+    link: "https://leetcode.com/u/ayanadinesh",
+    color: "#ffa116",
+  },
+  {
+    name: "LinkedIn",
+    link: "https://www.linkedin.com/in/ayanadinesh/",
+    color: "#0a66c2",
+  },
+  {
+    name: "Email",
+    link: "mailto:ayanakd.official@gmail.com",
+    color: "#EA4335",
+  },
+  {
+    name: "dev.to",
+    link: "https://dev.to/ayanadinesh",
+    color: "#14b8a6",
+  },
+];
+
+interface PlanetProps {
+  item: typeof planets[0];
+  index: number;
+}
+
+const Planet: React.FC<PlanetProps> = ({ item, index }) => {
+  const radius = typeof window !== 'undefined' && window.innerWidth < 768 ? 160 : 260;
+  const angle = (index / planets.length) * (2 * Math.PI);
+
+  const x = Math.cos(angle) * radius;
+  const y = Math.sin(angle) * radius;
+
+  return (
+    <motion.div
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-5 h-5 rounded-full cursor-pointer group z-50 pointer-events-auto"
+      style={{ 
+        x, 
+        y,
+        backgroundColor: (item as any).color,
+        boxShadow: `0 0 15px ${(item as any).color}`
+      }}
+      animate={{ 
+        scale: [1, 1.8, 1],
+        boxShadow: [
+          `0 0 10px ${(item as any).color}`,
+          `0 0 30px ${(item as any).color}`,
+          `0 0 10px ${(item as any).color}`
+        ],
+        opacity: [0.7, 1, 0.7]
+      }}
+      transition={{ 
+        duration: 2, 
+        repeat: Infinity, 
+        ease: "easeInOut",
+        delay: index * 0.4
+      }}
+      whileHover={{ scale: 2.2, opacity: 1 }}
+      whileTap={{ scale: 0.9 }}
+      onClick={() => window.open(item.link, "_blank")}
+    >
+      <span className="absolute -bottom-8 text-[8px] font-bold tracking-widest uppercase text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-black/80 px-1.5 py-0.5 rounded border border-white/5 backdrop-blur-sm pointer-events-none">
+        {item.name}
+      </span>
+    </motion.div>
+  );
+};
 
 const AboutMe: React.FC = () => {
   return (
@@ -37,17 +113,6 @@ const AboutMe: React.FC = () => {
             className="absolute w-[380px] h-[380px] md:w-[540px] md:h-[540px] border border-white/5 rounded-full"
           />
           
-          {/* Orbiting Elements */}
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-            className="absolute w-[340px] h-[340px] md:w-[500px] md:h-[500px]"
-          >
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#ff0080] rounded-full shadow-[0_0_25px_#ff0080]" />
-            <div className="absolute bottom-1/4 -right-1 w-4 h-4 bg-blue-500 rounded-full shadow-[0_0_25px_#3b82f6]" />
-            <div className="absolute top-1/2 -left-2 w-2 h-2 bg-[#ff8c00] rounded-full shadow-[0_0_20px_#ff8c00]" />
-          </motion.div>
-
           {/* Neon Ring (Original Cybersunset Colors) */}
           <div className="absolute w-[290px] h-[290px] md:w-[420px] md:h-[420px] rounded-full p-[6px] bg-gradient-to-tr from-[#ff0080] via-[#ff8c00] to-[#6a00ff] 
             shadow-[0_0_40px_rgba(255,0,128,0.6),inset_0_0_30px_rgba(255,255,255,0.2)]
@@ -69,6 +134,18 @@ const AboutMe: React.FC = () => {
               </div>
             </motion.div>
           </div>
+
+          {/* Orbiting Elements - OUTER LAYERS */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
+            whileHover={{ animationPlayState: "paused" }}
+            className="absolute flex items-center justify-center z-50"
+          >
+            {planets.map((item, i) => (
+              <Planet key={i} item={item} index={i} />
+            ))}
+          </motion.div>
         </motion.div>
 
         {/* RIGHT SIDE: Text & Bio Content */}
@@ -85,7 +162,9 @@ const AboutMe: React.FC = () => {
           </div>
 
           <h2 className="text-5xl md:text-7xl font-bold text-white leading-tight">
-            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500">Me</span>
+            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500">
+              <ShuffleText text="Me" />
+            </span>
           </h2>
 
           <div className="space-y-6 text-gray-400 text-lg leading-relaxed max-w-xl">
