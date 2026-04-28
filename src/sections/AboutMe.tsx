@@ -146,6 +146,9 @@ const AboutMe: React.FC = () => {
               <Planet key={i} item={item} index={i} />
             ))}
           </motion.div>
+          <p className="absolute bottom-[-100px] text-sm text-gray-400 animate-pulse">
+            Click the planets to explore 
+          </p>
         </motion.div>
 
         {/* RIGHT SIDE: Text & Bio Content */}
