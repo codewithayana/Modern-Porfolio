@@ -1,6 +1,7 @@
 import Navbar from './components/Navbar'
 import HeroIntro from './sections/HeroIntro'
 import AboutMe from './sections/AboutMe'
+import TechUniverse from './sections/TechUniverse'
 
 const App = () => {
   return (
@@ -8,6 +9,7 @@ const App = () => {
        <Navbar />
        <HeroIntro />
        <AboutMe />
+       <TechUniverse />
     </main>
   )
 }

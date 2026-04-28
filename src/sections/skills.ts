@@ -1,7 +1,7 @@
 import type { IconType } from 'react-icons';
 import {
   SiHtml5,
-  SiCss3,
+  SiCss,
   SiJavascript,
   SiReact,
   SiMongodb,
@@ -38,7 +38,7 @@ export const skills: SkillItem[] = [
   },
   {
     name: 'CSS',
-    icon: SiCss3,
+    icon: SiCss,
     color: '#1572b6',
     url: 'https://developer.mozilla.org/en-US/docs/Web/CSS',
   },
