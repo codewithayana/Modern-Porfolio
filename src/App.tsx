@@ -1,5 +1,5 @@
 import Navbar from './components/Navbar'
-import HeroIntro from './sections/HeroIntro'
+import VettvangurIntro from './sections/VettvangurIntro'
 import AboutMe from './sections/AboutMe'
 import TechUniverse from './sections/TechUniverse'
 
@@ -7,7 +7,7 @@ const App = () => {
   return (
     <main className="min-h-screen bg-bg-primary text-text-primary">
        <Navbar />
-       <HeroIntro />
+       <VettvangurIntro />
        <AboutMe />
        <TechUniverse />
     </main>
