@@ -72,6 +72,51 @@ const VettvangurIntro: React.FC = () => {
   const mouseRef    = useRef({ x: 0, y: 0 });
   const rafRef      = useRef<number>(0);
   const timersRef   = useRef<ReturnType<typeof setTimeout>[]>([]);
+  
+  const fullName = "AYANA DINESH";
+  const [typedName, setTypedName] = React.useState("");
+
+  useEffect(() => {
+    let i = 0;
+    const timer = setInterval(() => {
+      setTypedName(fullName.slice(0, i + 1));
+      i++;
+      if (i === fullName.length) clearInterval(timer);
+    }, 150);
+    return () => clearInterval(timer);
+  }, []);
+
+  // ── Word positioning logic ──
+  const points = React.useMemo(() => {
+    const allTexts = FLOATING_TAGS.flatMap(t => t.texts);
+    const result: {x: number, y: number}[] = [];
+    const minDist = 14; // Minimum distance between words
+
+    let attempts = 0;
+    while (result.length < allTexts.length && attempts < 800) {
+      const x = Math.random() * 84 + 8;
+      const y = Math.random() * 70 + 10; 
+
+      // ── NAME EXCLUSION ZONE ──
+      // Expanded to ensure words stay far away from the name and 'Full Stack Developer' subtitle
+      const isInNameSpace = x > 15 && x < 85 && y > 30 && y < 70;
+
+      let valid = !isInNameSpace;
+      if (valid) {
+        for (let p of result) {
+          const dx = p.x - x;
+          const dy = p.y - y;
+          if (Math.sqrt(dx * dx + dy * dy) < minDist) {
+            valid = false;
+            break;
+          }
+        }
+      }
+      if (valid) result.push({ x, y });
+      attempts++;
+    }
+    return result;
+  }, []);
 
   // ── Canvas particle animation ──
   useEffect(() => {
@@ -168,30 +213,13 @@ const VettvangurIntro: React.FC = () => {
         }
         .ad-name-pseudo::before,
         .ad-name-pseudo::after {
-          content: 'AYANA DINESH';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          font-size: inherit;
-          font-weight: inherit;
-          letter-spacing: inherit;
-          font-family: inherit;
-          white-space: nowrap;
-        }
-        .ad-name-pseudo::before {
-          color: #ff0080;
-          clip-path: polygon(0 0,100% 0,100% 35%,0 35%);
-          animation: ad-glitch1 4s infinite 2s;
-        }
-        .ad-name-pseudo::after {
-          color: #6a00ff;
-          clip-path: polygon(0 65%,100% 65%,100% 100%,0 100%);
-          animation: ad-glitch2 4s infinite 2.1s;
+          display: none;
         }
       `}</style>
 
       <section style={{
         position: 'relative', width: '100vw', height: '100vh',
-        overflow: 'hidden', background: '#050810',
+        overflow: 'hidden', background: ' radial-gradient(circle at 50% 40%,#0b0418',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         userSelect: 'none',
       }}>
@@ -223,10 +251,7 @@ const VettvangurIntro: React.FC = () => {
           const colors = ['#ff0080', '#f58d0eff', '#6a00ff', '#00d4ff'];
           
           return allTexts.map((txt, i) => {
-            // Generate pseudo-random but stable positions
-            const seed = i * 137.5; // Golden angle type distribution
-            const left = (10 + (seed % 80)) + '%';
-            const top = (15 + ((seed * 1.3) % 70)) + '%';
+            const point = points[i] || { x: 50, y: 50 }; // Fallback
             const color = colors[i % colors.length];
             
             return (
@@ -240,8 +265,8 @@ const VettvangurIntro: React.FC = () => {
                 }}
                 style={{
                   position: 'absolute',
-                  left,
-                  top,
+                  left: `${point.x}%`,
+                  top: `${point.y}%`,
                   zIndex: 4,
                   fontSize: '12px',
                   fontWeight: 800,
@@ -306,11 +331,11 @@ const VettvangurIntro: React.FC = () => {
                 lineHeight: 1,
                 fontFamily: "'Courier New', monospace",
                 whiteSpace: 'nowrap',
-                animation: 'none', // Animation now handled by parent container
+                animation: 'none', 
                 textShadow: '0 0 40px rgba(255,255,255,0.3), 0 0 80px rgba(255,255,255,0.1)',
               }}
             >
-              AYANA DINESH
+              {typedName}
             </span>
             {/* blinking cursor */}
             <span style={{
