@@ -146,17 +146,29 @@ const TechUniverse: React.FC = () => {
       <div className="max-w-7xl mx-auto relative z-10">
         
         {/* Header */}
-        <div className="text-center space-y-4 mb-16">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="flex items-center justify-center gap-4 text-pink-500">
-             <div className="h-[1px] w-12 bg-pink-500/50" />
-             <span className="text-xs font-bold tracking-[0.5em] uppercase">What I work with</span>
-             <div className="h-[1px] w-12 bg-pink-500/50" />
-          </motion.div>
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter">Tech <span className="bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">Universe</span></h2>
-          <p className="text-gray-400 text-lg font-light tracking-wide max-w-3xl mx-auto italic">
-            Full-stack toolkit — built with precision, deployed with confidence
-          </p>
-        </div>
+<div className="text-center space-y-4 mb-16">
+
+  {/* TITLE FIRST */}
+  <h2 className="text-5xl md:text-6xl font-black tracking-tighter">
+    Tech <span className="bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
+      Universe
+    </span>
+  </h2>
+
+  {/* THEN EYEBROW */}
+  <motion.div 
+    initial={{ opacity: 0 }} 
+    whileInView={{ opacity: 1 }} 
+    className="flex items-center justify-center gap-4 text-pink-500"
+  >
+    <div className="h-[1px] w-12 bg-pink-500/50" />
+    <span className="text-xs font-bold tracking-[0.5em] uppercase">
+      What I work with
+    </span>
+    <div className="h-[1px] w-12 bg-pink-500/50" />
+  </motion.div>
+
+</div>
 
         {/* Categorized Clusters */}
         <div className="space-y-12 mb-20">

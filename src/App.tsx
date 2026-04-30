@@ -2,6 +2,7 @@ import Navbar from './components/Navbar'
 import VettvangurIntro from './sections/VettvangurIntro'
 import AboutMe from './sections/AboutMe'
 import TechUniverse from './sections/TechUniverse'
+import Projects from './sections/Projects.tsx'
 
 const App = () => {
   return (
@@ -10,8 +11,11 @@ const App = () => {
        <VettvangurIntro />
        <AboutMe />
        <TechUniverse />
+       <Projects />
     </main>
   )
 }
+
+
 
 export default App

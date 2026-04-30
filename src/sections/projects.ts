@@ -16,7 +16,7 @@ import {
   SiHandlebarsdotjs,
   SiHtml5,
   SiNestjs,
-  SiCss3,
+  SiCss,
   SiExpress,
   SiRedis,
   SiDocker,
@@ -51,11 +51,14 @@ export interface ProjectItem {
   link: string;
   github: string;
   techStack: TechStackItem[];
+  category: 'fullstack' | 'frontend' | 'backend';
+  isFeatured?: boolean;
+  emoji?: string;
 }
 
 export const projects: ProjectItem[] = [
-    {
-  title: 'my-portfolio-next.js',
+  {
+    title: 'my-portfolio-next.js',
     description:
       'This is a modern developer portfolio. Designed with a clean UI/UX, smooth animations, and dynamic content. it is fully responsive and optimized for performance.',
     image: '/assets/img/modern portfolio.png',
@@ -63,11 +66,14 @@ export const projects: ProjectItem[] = [
     github: 'https://github.com/codewithayana/my-portfolio-next.js',
     techStack: [
       { icon: SiNestjs, name: 'Nest.js', color: '#e34c26' },
-      { icon: SiCss3, name: 'CSS', color: '#264de4' },
+      { icon: SiCss, name: 'CSS', color: '#264de4' },
       techStacks.react,
       techStacks.tailwind,
       techStacks.typescript,
     ],
+    category: 'frontend',
+    isFeatured: true,
+    emoji: '🌐',
   },
   {
     title: 'Node-Mongoose-JWT-APIs-TS',
@@ -84,6 +90,8 @@ export const projects: ProjectItem[] = [
       { icon: SiRedis, name: 'Redis', color: '#dc382d' },
       { icon: SiDocker, name: 'Docker', color: '#2496ed' },
     ],
+    category: 'backend',
+    emoji: '📊',
   },
   {
     title: 'Lumina-Skin-ecommerce',
@@ -96,8 +104,11 @@ export const projects: ProjectItem[] = [
       techStacks.node,
       { icon: SiExpress, name: 'Express', color: '#000' },
       techStacks.mongodb,
-            { icon: SiHandlebarsdotjs, name: 'Handlebars.js', color: '#000' },
-            { icon: SiHtml5, name: 'HTML5', color: '#e34c26' }
+      { icon: SiHandlebarsdotjs, name: 'Handlebars.js', color: '#000' },
+      { icon: SiHtml5, name: 'HTML5', color: '#e34c26' },
     ],
+    category: 'fullstack',
+    emoji: '🛒',
   },
 ];
+
