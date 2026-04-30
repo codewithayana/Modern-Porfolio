@@ -45,4 +45,12 @@ body {
   .pill-accent {
     @apply w-fit rounded-full border border-accent/40 bg-accent-soft px-3 py-1 text-sm font-medium text-accent-strong;
   }
+
+  .reveal {
+    will-change: transform, opacity, clip-path, filter;
+  }
+
+  .parallax-item {
+    will-change: transform;
+  }
 }

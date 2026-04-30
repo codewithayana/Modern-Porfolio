@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = ['About', 'Skills', 'Projects', 'Contact'];
+  const navItems = ['About', 'Skills', 'Achievements', 'Projects', 'Contact'];
 
   return (
     <nav 

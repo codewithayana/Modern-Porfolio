@@ -173,13 +173,17 @@ const TechUniverse: React.FC = () => {
         {/* Categorized Clusters */}
         <div className="space-y-12 mb-20">
           {categories.map((cat, catIdx) => (
-            <div key={catIdx} className="space-y-6">
+            <div key={catIdx} className="space-y-6 reveal-item">
               <div className="flex items-center gap-6">
                 <h3 className="text-[10px] font-black tracking-[0.4em] uppercase text-gray-500 whitespace-nowrap">{cat.title}</h3>
                 <div className="h-[1px] flex-1 bg-gradient-to-r from-white/10 to-transparent" />
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
-                {cat.skills.map((skill, i) => <TechNode key={i} skill={skill} index={i} />)}
+                {cat.skills.map((skill, i) => (
+                  <div key={i} className="reveal-item">
+                    <TechNode skill={skill} index={i} />
+                  </div>
+                ))}
               </div>
             </div>
           ))}

@@ -121,13 +121,12 @@ const Projects: React.FC = () => {
         </div>
 
         {/* SCROLL TRACK */}
-        <div className="scroll-outer">
+        <div className="scroll-outer reveal">
           <div className="scroll-track" id="track" ref={trackRef}>
             {filteredProjects.map((project, idx) => (
               <div
                 key={project.title}
-                className={`card ${project.isFeatured ? 'featured' : ''}`}
-                style={{ animationDelay: `${0.1 + idx * 0.08}s` }}
+                className={`card reveal-item ${project.isFeatured ? 'featured' : ''}`}
               >
                 <div className="thumb" style={{ background: 'linear-gradient(135deg,#0d1020,#1a0d30)' }}>
                   <div

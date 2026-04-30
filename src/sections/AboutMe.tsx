@@ -171,15 +171,15 @@ const AboutMe: React.FC = () => {
           </h2>
 
           <div className="space-y-6 text-gray-400 text-lg leading-relaxed max-w-xl">
-            <p>
+            <p className="reveal-item">
               I'm <span className="text-white font-medium">Ayana</span>, a passionate <span className="text-white font-medium">Full Stack Developer</span> who loves 
               building modern, interactive and user-friendly web experiences.
             </p>
-            <p>
+            <p className="reveal-item">
               I focus on creating clean, responsive and performance-driven applications that not only 
               look good but also deliver a smooth experience.
             </p>
-            <p>
+            <p className="reveal-item">
               I enjoy turning ideas into real digital products and constantly exploring new technologies 
               to grow my skills.
             </p>

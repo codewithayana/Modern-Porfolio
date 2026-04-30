@@ -1,5 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // ── Cybersunset: #ff0080 → #ff8c00 → #6a00ff ──
 function csColor(t: number, a: number): string {
@@ -173,6 +177,51 @@ const VettvangurIntro: React.FC = () => {
     };
   }, []);
 
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const indicatorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    gsap.to(contentRef.current, {
+      scrollTrigger: {
+        trigger: contentRef.current,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+      },
+      y: -150,
+      scale: 0.85,
+      opacity: 0,
+      filter: 'blur(15px)',
+    });
+
+    if (indicatorRef.current) {
+      gsap.to(indicatorRef.current, {
+        scrollTrigger: {
+          trigger: contentRef.current,
+          start: 'top top',
+          end: '20% top',
+          scrub: true,
+        },
+        opacity: 0,
+        y: 50,
+      });
+    }
+
+    gsap.to(canvasRef.current, {
+      scrollTrigger: {
+        trigger: contentRef.current,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+      },
+      y: 200,
+      scale: 1.1,
+    });
+  }, []);
+
   return (
     <>
       <style>{`
@@ -287,7 +336,7 @@ const VettvangurIntro: React.FC = () => {
         })()}
 
         {/* ── CENTRAL CONTENT ── */}
-        <div style={{
+        <div ref={contentRef} style={{
           position: 'relative', zIndex: 10,
           display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
         }}>
@@ -371,7 +420,7 @@ const VettvangurIntro: React.FC = () => {
         </div>
 
         {/* ── SCROLL INDICATOR ── */}
-        <div style={{
+        <div ref={indicatorRef} style={{
           position: 'absolute', bottom: '2.5rem', left: '50%', transform: 'translateX(-50%)',
           zIndex: 20, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
           animation: 'ad-role-in 1s 2.5s both', opacity: 0,
