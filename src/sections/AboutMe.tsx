@@ -1,7 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import ShuffleText from '../components/ShuffleText';
-import { SiReact, SiTailwindcss, SiNodedotjs, SiExpress, SiMongodb, SiJavascript, SiGithub } from 'react-icons/si';
+import { 
+  SiReact, SiTailwindcss, SiNodedotjs, SiExpress, SiMongodb, SiJavascript, SiGithub,
+  SiLeetcode, SiDevdotto, SiGmail 
+} from 'react-icons/si';
+import { FaLinkedin } from 'react-icons/fa';
 import profileImg from '../assets/profile.png';
 import avatarImg from '../assets/avatar.png';
 
@@ -10,26 +14,31 @@ const planets = [
     name: "GitHub",
     link: "https://github.com/codewithayana",
     color: "#c9d1d9",
+    icon: SiGithub,
   },
   {
     name: "LeetCode",
     link: "https://leetcode.com/u/ayanadinesh",
     color: "#ffa116",
+    icon: SiLeetcode,
   },
   {
     name: "LinkedIn",
     link: "https://www.linkedin.com/in/ayanadinesh/",
     color: "#0a66c2",
+    icon: FaLinkedin,
   },
   {
     name: "Email",
     link: "mailto:ayanakd.official@gmail.com",
     color: "#EA4335",
+    icon: SiGmail,
   },
   {
     name: "dev.to",
     link: "https://dev.to/ayanadinesh",
     color: "#14b8a6",
+    icon: SiDevdotto,
   },
 ];
 
@@ -45,37 +54,59 @@ const Planet: React.FC<PlanetProps> = ({ item, index }) => {
   const x = Math.cos(angle) * radius;
   const y = Math.sin(angle) * radius;
 
+  const Icon = item.icon;
+
   return (
     <motion.div
-      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-5 h-5 rounded-full cursor-pointer group z-50 pointer-events-auto"
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full cursor-pointer group z-50 pointer-events-auto border border-white/10 backdrop-blur-md"
       style={{ 
         x, 
         y,
-        backgroundColor: (item as any).color,
-        boxShadow: `0 0 15px ${(item as any).color}`
+        backgroundColor: `${item.color}22`,
+        boxShadow: `0 0 20px ${item.color}44`
       }}
       animate={{ 
-        scale: [1, 1.8, 1],
-        boxShadow: [
-          `0 0 10px ${(item as any).color}`,
-          `0 0 30px ${(item as any).color}`,
-          `0 0 10px ${(item as any).color}`
-        ],
-        opacity: [0.7, 1, 0.7]
+        rotate: -360, // Keep icons upright
       }}
       transition={{ 
-        duration: 2, 
+        duration: 40, 
         repeat: Infinity, 
-        ease: "easeInOut",
-        delay: index * 0.4
+        ease: "linear" 
       }}
-      whileHover={{ scale: 2.2, opacity: 1 }}
-      whileTap={{ scale: 0.9 }}
-      onClick={() => window.open(item.link, "_blank")}
     >
-      <span className="absolute -bottom-8 text-[8px] font-bold tracking-widest uppercase text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-black/80 px-1.5 py-0.5 rounded border border-white/5 backdrop-blur-sm pointer-events-none">
-        {item.name}
-      </span>
+      <motion.div
+        className="w-full h-full flex items-center justify-center rounded-full"
+        animate={{ 
+          scale: [1, 1.1, 1],
+          boxShadow: [
+            `0 0 10px ${item.color}33`,
+            `0 0 25px ${item.color}66`,
+            `0 0 10px ${item.color}33`
+          ],
+        }}
+        transition={{ 
+          duration: 3, 
+          repeat: Infinity, 
+          ease: "easeInOut",
+          delay: index * 0.5
+        }}
+        whileHover={{ 
+          scale: 1.3, 
+          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+          boxShadow: `0 0 30px ${item.color}`,
+          borderColor: item.color
+        }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => window.open(item.link, "_blank")}
+      >
+        <Icon 
+          className="text-xl transition-all duration-300 group-hover:scale-110" 
+          style={{ 
+            color: item.color,
+            filter: `drop-shadow(0 0 8px ${item.color}88)`
+          }}
+        />
+      </motion.div>
     </motion.div>
   );
 };

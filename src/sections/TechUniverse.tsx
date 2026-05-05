@@ -1,109 +1,114 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  SiReact, SiNodedotjs, SiMongodb, SiExpress, 
-  SiTailwindcss, SiJavascript, SiGit, SiPostman,
-  SiTypescript, SiHtml5, SiCss, SiNextdotjs,
-  SiFramer, SiVite, SiGraphql,
-  SiJsonwebtokens, SiPostgresql, SiRedis,
-  SiDocker, SiVercel,
-  SiFigma, SiNotion, 
-} from 'react-icons/si';
-import {  FaNetworkWired, FaAws } from 'react-icons/fa6';
-import { TbApi } from 'react-icons/tb';
-import {  MdOutlineBugReport } from 'react-icons/md';
-import { VscVscode } from 'react-icons/vsc';
 
-const categories = [
+const skillsData = [
   {
+    id: 1,
     title: "Languages",
-    skills: [
-      { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E" },
-      { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
-      { name: "HTML5", icon: SiHtml5, color: "#E34F26" },
-      { name: "CSS3", icon: SiCss, color: "#1572B6" },
-    ]
+    icon: "</>",
+    iconBg: "#b45309",
+    iconColor: "#fde68a",
+    borderColor: "#b45309",
+    tagColor: "#fde68a",
+    tagBg: "rgba(180,83,9,0.15)",
+    tagBorder: "rgba(180,83,9,0.3)",
+    skills: ["JavaScript", "TypeScript", "HTML5", "CSS3"],
   },
   {
+    id: 2,
     title: "Frontend",
-    skills: [
-      { name: "React.js", icon: SiReact, color: "#61DAFB" },
-      { name: "Next.js", icon: SiNextdotjs, color: "#ffffff" },
-      { name: "Tailwind CSS", icon: SiTailwindcss, color: "#06B6D4" },
-      { name: "Framer Motion", icon: SiFramer, color: "#ffffff" },
-      
-      { name: "Vite", icon: SiVite, color: "#646CFF" },
-    ]
+    icon: "⊞",
+    iconBg: "#1e3a5f",
+    iconColor: "#93c5fd",
+    borderColor: "#1e40af",
+    tagColor: "#93c5fd",
+    tagBg: "rgba(30,58,138,0.2)",
+    tagBorder: "rgba(30,58,138,0.3)",
+    skills: ["React.js", "Next.js", "Tailwind CSS","Framer Motion", "Vite"],
   },
   {
+    id: 3,
     title: "Backend",
-    skills: [
-      { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
-      { name: "Express.js", icon: SiExpress, color: "#ffffff" },
-      { name: "REST APIs", icon: TbApi, color: "#0078D4" },
-      { name: "GraphQL", icon: SiGraphql, color: "#E10098" },
-      { name: "JWT Auth", icon: SiJsonwebtokens, color: "#ffffff" },
-      { name: "WebSockets", icon: FaNetworkWired, color: "#ffffff" },
-    ]
+    icon: "⬡",
+    iconBg: "#064e3b",
+    iconColor: "#6ee7b7",
+    borderColor: "#065f46",
+    tagColor: "#6ee7b7",
+    tagBg: "rgba(6,78,59,0.2)",
+    tagBorder: "rgba(6,78,59,0.3)",
+    skills: ["Node.js", "Express.js", "REST APIs","JWT Auth"],
   },
   {
+    id: 4,
     title: "Database",
-    skills: [
-      { name: "PostgreSQL", icon: SiPostgresql, color: "#4169E1" },
-      { name: "MongoDB", icon: SiMongodb, color: "#47A248" },
-      { name: "Redis", icon: SiRedis, color: "#DC382D" },
-    ]
+    icon: "🗄",
+    iconBg: "#4c1d95",
+    iconColor: "#c4b5fd",
+    borderColor: "#5b21b6",
+    tagColor: "#c4b5fd",
+    tagBg: "rgba(76,29,149,0.2)",
+    tagBorder: "rgba(76,29,149,0.3)",
+    skills: ["PostgreSQL", "MongoDB", "Redis"],
   },
   {
+    id: 5,
     title: "Cloud & DevOps",
-    skills: [
-      { name: "AWS", icon: FaAws, color: "#FF9900" },
-      { name: "Docker", icon: SiDocker, color: "#2496ED" },
-      { name: "Vercel", icon: SiVercel, color: "#ffffff" },
-    ]
+    icon: "☁",
+    iconBg: "#1e3a5f",
+    iconColor: "#7dd3fc",
+    borderColor: "#0369a1",
+    tagColor: "#e2e8f0",
+    tagBg: "rgba(15,23,42,0.4)",
+    tagBorder: "#334155",
+    skills: ["AWS", "Docker","Vercel"],
   },
   {
-    title: "Tools & Testing",
-    skills: [
-      { name: "Playwright", icon: MdOutlineBugReport, color: "#2EAD33" },
-      { name: "Git", icon: SiGit, color: "#F05032" },
-      { name: "VS Code", icon: VscVscode, color: "#007ACC" },
-      { name: "Postman", icon: SiPostman, color: "#FF6C37" },
-      { name: "Figma", icon: SiFigma, color: "#F24E1E" },
-      { name: "Notion", icon: SiNotion, color: "#ffffff" },
-    ]
+    id: 6,
+    title: "Testing",
+    icon: "✓",
+    iconBg: "#14532d",
+    iconColor: "#4ade80",
+    borderColor: "#166534",
+    tagColor: "#4ade80",
+    tagBg: "rgba(20,83,45,0.2)",
+    tagBorder: "rgba(20,83,45,0.3)",
+    skills: [ "Playwright","Postman" ],
   },
-  
+  {
+    id: 7,
+    title: "Tools",
+    icon: "🔧",
+    iconBg: "#78350f",
+    iconColor: "#fcd34d",
+    borderColor: "#92400e",
+    tagColor: "#fcd34d",
+    tagBg: "rgba(120,53,15,0.2)",
+    tagBorder: "rgba(120,53,15,0.3)",
+    skills: ["Git","GitHub","VS Code",  "Figma","Notion","Swagger","ESlint","Prettier","NPM","Yarn","PNPM"],
+  },
+  {
+    id: 8,
+    title: "Architecture Concepts",
+    icon: "⚙",
+    iconBg: "#7f1d1d",
+    iconColor: "#fca5a5",
+    borderColor: "#991b1b",
+    tagColor: "#fca5a5",
+    tagBg: "rgba(127,29,29,0.2)",
+    tagBorder: "rgba(127,29,29,0.3)",
+    skills: ["MVC", "REST", "SOLID Principles", "CI/CD", "Event-Driven", "System Design","Scrum"],
+  },
 ];
 
 const proficiencies = [
   { name: "JavaScript / TS", level: 90, color: "#F7DF1E" },
   { name: "React.js", level: 50, color: "#61DAFB" },
   { name: "Node.js", level: 85, color: "#339933" },
-  { name: "PostgreSQL", level: 80, color: "#4169E1" },
-  { name: "Docker / AWS", level: 5, color: "#FF9900" },
+  { name: "PostgreSQL", level: 60, color: "#4169E1" },
+  { name: "Docker / AWS", level: 50, color: "#FF9900" },
 ];
 
-const TechNode: React.FC<{ skill: any, index: number }> = ({ skill, index }) => (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.8 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.4, delay: index * 0.05 }}
-    viewport={{ once: true }}
-    className="flex flex-col items-center group relative p-4"
-  >
-    <div 
-      className="absolute inset-0 rounded-full blur-[30px] opacity-10 group-hover:opacity-30 transition-opacity"
-      style={{ backgroundColor: skill.color }}
-    />
-    <div className="w-14 h-14 md:w-16 md:h-16 rounded-full border border-white/10 flex items-center justify-center bg-black/40 backdrop-blur-md z-10 transition-all group-hover:scale-110 group-hover:border-white/30 shadow-lg">
-      <skill.icon className="text-2xl md:text-3xl" style={{ color: skill.color }} />
-    </div>
-    <span className="mt-3 text-[9px] md:text-[10px] font-bold text-gray-400 tracking-widest uppercase group-hover:text-white transition-colors text-center">
-      {skill.name}
-    </span>
-  </motion.div>
-);
+
 
 const ProgressBar: React.FC<{ item: any, index: number }> = ({ item, index }) => (
   <div className="space-y-3 w-full">
@@ -127,6 +132,8 @@ const ProgressBar: React.FC<{ item: any, index: number }> = ({ item, index }) =>
 );
 
 const TechUniverse: React.FC = () => {
+  const [hovered, setHovered] = useState<number | null>(null);
+
   return (
     <section id="skills" className="relative min-h-screen bg-[#050110] text-white overflow-hidden py-20 px-6">
       
@@ -170,22 +177,58 @@ const TechUniverse: React.FC = () => {
 
 </div>
 
-        {/* Categorized Clusters */}
-        <div className="space-y-12 mb-20">
-          {categories.map((cat, catIdx) => (
-            <div key={catIdx} className="space-y-6 reveal-item">
-              <div className="flex items-center gap-6">
-                <h3 className="text-[10px] font-black tracking-[0.4em] uppercase text-gray-500 whitespace-nowrap">{cat.title}</h3>
-                <div className="h-[1px] flex-1 bg-gradient-to-r from-white/10 to-transparent" />
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
-                {cat.skills.map((skill, i) => (
-                  <div key={i} className="reveal-item">
-                    <TechNode skill={skill} index={i} />
+        {/* Categorized Clusters Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto mb-20">
+          {skillsData.map((category) => (
+            <motion.div
+              key={category.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              onMouseEnter={() => setHovered(category.id)}
+              onMouseLeave={() => setHovered(null)}
+              className="relative p-6 rounded-xl transition-all duration-300 border backdrop-blur-sm group"
+              style={{
+                background: hovered === category.id ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.02)",
+                borderColor: hovered === category.id ? category.borderColor : "rgba(255,255,255,0.08)",
+              }}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 transition-transform group-hover:scale-110"
+                    style={{ background: category.iconBg, color: category.iconColor }}
+                  >
+                    {category.icon}
                   </div>
+                  <span className="text-slate-100 text-base font-semibold tracking-wide">
+                    {category.title}
+                  </span>
+                </div>
+                <span className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-[10px] text-slate-400 font-bold border border-white/5">
+                  {category.skills.length}
+                </span>
+              </div>
+
+              {/* Tags */}
+              <div className="flex flex-wrap gap-2">
+                {category.skills.map((skill) => (
+                  <motion.span
+                    key={skill}
+                    whileHover={{ scale: 1.05 }}
+                    className="px-2.5 py-1 rounded-md text-[11px] font-medium tracking-wider border transition-colors"
+                    style={{
+                      borderColor: category.tagBorder,
+                      background: category.tagBg,
+                      color: category.tagColor,
+                    }}
+                  >
+                    {skill}
+                  </motion.span>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 

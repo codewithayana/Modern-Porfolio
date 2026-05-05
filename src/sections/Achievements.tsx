@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import "./Achievements.css";
 
 
@@ -14,22 +13,24 @@ const achievements = [
     title: "SQL 50",
     desc: "Mastered SQL challenges",
     icon: "💾",
+    badge: "/badges/sql50.png",
   },
   {
     title: "Pull Shark",  
     desc: "Merged PRs on GitHub",
     icon: "🦈",
+    badge: "/badges/pull-shark.png",
   },
   {
     title: "50 Days Badge",
     desc: "Consistency achievement",
     icon: "🏅",
+    badge: "/badges/50-days.png",
   },
 ];
 
 const Achievements: React.FC = () => {
 
-  const [selected, setSelected] = useState<any>(null); // ✅ ADD HERE
 
   return (
     <section id="achievements" className="ach-section reveal">
@@ -40,42 +41,24 @@ const Achievements: React.FC = () => {
           <div className="timeline-item reveal-item" key={i}>
             <div className="timeline-dot"></div>
 
-            {/* ✅ ADD onClick here */}
-            <div
-              className="timeline-card"
-              onClick={() => setSelected(item)}
-            >
-              <div className="icon">{item.icon}</div>
-              <div>
-                <h3>{item.title}</h3>
-                <p>{item.desc}</p>
+            <div className="timeline-card">
+              <div className="timeline-card-main">
+                <div className="icon">{item.icon}</div>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.desc}</p>
+                </div>
               </div>
+              
+              {item.badge && (
+                <div className="timeline-badge-mini">
+                  <img src={item.badge} alt="badge" />
+                </div>
+              )}
             </div>
           </div>
         ))}
       </div>
-
-      {/* ✅ ADD MODAL HERE (inside return, but after timeline) */}
-      {selected && (
-        <div className="modal-overlay" onClick={() => setSelected(null)}>
-          <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img src={selected.badge} alt="badge" className="modal-badge" />
-            <h2>{selected.title}</h2>
-            <p>{selected.desc}</p>
-
-            <button
-              className="close-btn"
-              onClick={() => setSelected(null)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
     </section>
   );
 };
