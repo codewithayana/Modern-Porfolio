@@ -1,0 +1,125 @@
+.edu-section {
+  background: #050110;
+  min-height: 100vh;
+  padding: 80px 10%;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.edu-title {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 60px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #ff0080, #ff8c00, #6a00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── TIMELINE ── */
+.timeline {
+  position: relative;
+  max-width: 700px;
+  margin: auto;
+}
+
+/* vertical glowing line */
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(#ff0080, #ff8c00, #6a00ff);
+  box-shadow: 0 0 10px rgba(255, 0, 128, 0.6);
+}
+
+/* each item */
+.timeline-item {
+  position: relative;
+  margin-bottom: 50px;
+  padding-left: 60px;
+}
+
+/* glowing dot */
+.timeline-dot {
+  position: absolute;
+  left: 11px;
+  top: 5px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ff0080;
+  box-shadow: 0 0 12px #ff0080, 0 0 25px #ff0080;
+}
+
+/* card */
+.timeline-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 16px 20px;
+  border-radius: 12px;
+  transition: 0.35s;
+  backdrop-filter: blur(10px);
+}
+
+.timeline-card-main {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.timeline-badge-mini {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-badge-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+  transition: 0.3s;
+}
+
+.timeline-card:hover .timeline-badge-mini img {
+  transform: scale(1.2) rotate(5deg);
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.4));
+}
+
+/* hover effect */
+.timeline-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: #ff0080;
+  box-shadow: 0 0 25px rgba(255,0,128,0.3);
+}
+
+/* icon */
+.icon {
+  font-size: 1.8rem;
+}
+
+/* text */
+.timeline-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.timeline-card p {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+
