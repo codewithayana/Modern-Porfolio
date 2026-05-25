@@ -1,5 +1,12 @@
 .edu-section {
-  background: #050110;
+  background-color: #050110;
+  background-image: 
+    radial-gradient(circle at 85% 15%, rgba(176, 106, 255, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 15% 85%, rgba(255, 0, 128, 0.15) 0%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+  background-position: 0 0, 0 0, -1px -1px, -1px -1px;
   min-height: 100vh;
   padding: 80px 10%;
   color: white;
@@ -54,6 +61,12 @@
   border-radius: 50%;
   background: #ff0080;
   box-shadow: 0 0 12px #ff0080, 0 0 25px #ff0080;
+  animation: dotBlink 1.5s infinite ease-in-out;
+}
+
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; transform: scale(1); filter: brightness(1.2); }
+  50% { opacity: 0.4; transform: scale(0.85); filter: brightness(0.7); }
 }
 
 /* card */

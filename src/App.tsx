@@ -8,6 +8,7 @@ import EducationSection from './sections/EducationSection'
 import Projects from './sections/Projects.tsx'
 import SmoothScroll from './components/SmoothScroll'
 import { useScrollReveal } from './hooks/useScrollReveal'
+import BackToTop from './components/BackToTop'
 
 const App = () => {
   useScrollReveal();
@@ -36,6 +37,7 @@ const App = () => {
          <div className="reveal"><Achievements /></div>
          <div className="reveal"><EducationSection /></div>
       </main>
+      <BackToTop />
     </SmoothScroll>
   )
 }
