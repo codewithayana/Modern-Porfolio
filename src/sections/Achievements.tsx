@@ -3,35 +3,35 @@ import './Achievements.css';
 
 const badges = [
   {
-    id: "01", name: "LeetCode 75", desc: "Completed 75-problem challenge",
+    name: "LeetCode 75", desc: "Completed 75-problem challenge",
     tag: "Algo", icon: "💻", acc: "#7F77DD", tagBg: "rgba(127,119,221,0.12)", stroke: "#534AB7",
   },
   {
-    id: "02", name: "Pull Shark", desc: "Merged PRs on GitHub",
-    tag: "GitHub", icon: "🦈", acc: "#1D9E75", tagBg: "rgba(29,158,117,0.12)", stroke: "#0F6E56",
-  },
-  {
-    id: "03", name: "SQL 50", desc: "Mastered SQL challenges",
+    name: "SQL 50", desc: "Mastered SQL challenges",
     tag: "Database", icon: "🗄️", acc: "#378ADD", tagBg: "rgba(55,138,221,0.12)", stroke: "#185FA5",
   },
   {
-    id: "04", name: "50 Days Badge", desc: "Consistency achievement",
+    name: "50 Days Badge", desc: "Consistency achievement",
     tag: "Streak", icon: "🏅", acc: "#EF9F27", tagBg: "rgba(239,159,39,0.12)", stroke: "#854F0B",
   },
   {
-    id: "05", name: "YOLO", desc: "Merged PR without review",
+    name: "Pull Shark", desc: "Merged PRs on GitHub",
+    tag: "GitHub", icon: "🦈", acc: "#1D9E75", tagBg: "rgba(29,158,117,0.12)", stroke: "#0F6E56",
+  },
+  {
+    name: "YOLO", desc: "Merged PR without review",
     tag: "Bold", icon: "🚀", acc: "#E24B4A", tagBg: "rgba(226,75,74,0.12)", stroke: "#A32D2D",
   },
   {
-    id: "06", name: "Quickdraw", desc: "Closed issue within 5 mins",
+    name: "Quickdraw", desc: "Closed issue within 5 mins",
     tag: "Speed", icon: "⚡", acc: "#EF9F27", tagBg: "rgba(239,159,39,0.12)", stroke: "#854F0B",
   },
   {
-    id: "07", name: "Pair Extraordinaire", desc: "Co-authored commits",
+    name: "Pair Extraordinaire", desc: "Co-authored commits",
     tag: "Collab", icon: "🤝", acc: "#D4537E", tagBg: "rgba(212,83,126,0.12)", stroke: "#993556",
   },
   {
-    id: "08", name: "Starstruck", desc: "Created a starred repository",
+    name: "Starstruck", desc: "Created a starred repository",
     tag: "Open Source", icon: "⭐", acc: "#EF9F27", tagBg: "rgba(239,159,39,0.12)", stroke: "#854F0B",
   },
 ];
@@ -58,8 +58,7 @@ function BadgeCard({ badge, index, wrapRef }: any) {
         "--delay": `${0.15 + index * 0.09}s`,
       } as React.CSSProperties}
     >
-      <div className="diamond-tl" />
-      <div className="diamond-br" />
+  
       
       <div className="icon-box-cut">
         <span className="hex-icon">{badge.icon}</span>
@@ -89,7 +88,6 @@ export default function Achievements() {
         <div className="badges-grid">
           {badges.map((badge, i) => (
             <BadgeCard
-              key={badge.id}
               badge={badge}
               index={i}
               wrapRef={wrapRef}

@@ -3,14 +3,13 @@ import "./Certifications.css";
 
 const certification = {
   id: "cert-1",
-  name: "Full-Stack Web Development",
-  issuer: "Sample Organization",
+  name: "Full-Stack Web Development Bootcamp",
+  issuer: "Gseven Technologies",
   issuerIcon: "🎓",
-  date: "2024",
-  // TODO: Replace with the actual path to your certificate image (e.g., "/images/my-certificate.png")
-  image: "", 
-  description: "Comprehensive training and hands-on experience in modern web development technologies including React, Node.js, Express, and database management. Successfully completed all coursework and final capstone projects.",
-  link: "#" // Optional: Link to verify the certificate
+  date: "2026",
+  image: "/certificates/bootcamp.pdf", 
+  description: "Successfully completed a Web Developer Bootcamp at gseven Technologies, gaining hands-on experience in modern web development and real-world project building.",
+  link: "/certificates/bootcamp.pdf" 
 };
 
 export default function Certifications() {
@@ -27,7 +26,7 @@ export default function Certifications() {
     <section className="certifications" id="certifications">
       <div className="cert-wrap" ref={wrapRef}>
         <div className="cert-header">
-          <div className="cert-title">Certification</div>
+          <div className="cert-title">Certifications</div>
           <div className="cert-subtitle">Verified Skill Achievement</div>
         </div>
 
@@ -35,7 +34,11 @@ export default function Certifications() {
           
           <div className="cert-image-container">
             {certification.image ? (
-              <img src={certification.image} alt={certification.name} className="cert-image" />
+              certification.image.endsWith('.pdf') ? (
+                <iframe src={`${certification.image}#toolbar=0`} title={certification.name} className="cert-image" style={{ width: "100%", height: "100%", border: "none", overflow: "hidden" }} />
+              ) : (
+                <img src={certification.image} alt={certification.name} className="cert-image" />
+              )
             ) : (
               <div className="cert-image-placeholder">
                 <span>📄</span>
@@ -59,7 +62,7 @@ export default function Certifications() {
               <span className="cert-date">{certification.date}</span>
               {certification.link && certification.link !== "#" && (
                 <a href={certification.link} target="_blank" rel="noreferrer" className="cert-btn">
-                  Verify
+                  View Certificate
                 </a>
               )}
             </div>

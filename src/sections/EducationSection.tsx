@@ -5,7 +5,7 @@ import { education } from "./education";
 const EducationSection: React.FC = () => {
   return (
     <section id="education" className="edu-section">
-      <h1 className="edu-title reveal-item" style={{ background: "linear-gradient(90deg, #b06aff, #ff6eb4, #ff9a3c)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Education</h1>
+      <h1 className="edu-title reveal-item" style={{ background: "linear-gradient(90deg, #b06aff, #ff6eb4, #ff9a3c)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Educations</h1>
 
       <div className="timeline">
         {education.map((item, i) => (
