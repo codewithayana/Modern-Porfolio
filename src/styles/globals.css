@@ -53,4 +53,18 @@ body {
   .parallax-item {
     will-change: transform;
   }
+
+  .tech-bg-glow {
+    background: radial-gradient(circle at 50% 30%, #1a0533, transparent 70%);
+  }
+  body.light-mode .tech-bg-glow {
+    background: radial-gradient(circle at 50% 30%, rgba(255, 105, 180, 0.05), transparent 70%);
+  }
+
+  .tech-bg-grid {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  }
+  body.light-mode .tech-bg-grid {
+    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+  }
 }

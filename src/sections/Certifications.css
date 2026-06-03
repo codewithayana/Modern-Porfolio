@@ -238,3 +238,19 @@
   border-radius: 12px;
   opacity: 0.3;
 }
+
+/* Light Mode Overrides */
+body.light-mode .cert-featured-card {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(0, 240, 255, 0.05);
+}
+body.light-mode .cert-name {
+  color: var(--color-text-primary);
+  text-shadow: none;
+}
+body.light-mode .cert-description {
+  color: var(--color-text-secondary);
+}
+body.light-mode .cert-image {
+  background: rgba(0, 0, 0, 0.05);
+}

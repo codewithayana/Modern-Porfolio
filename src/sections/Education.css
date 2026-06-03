@@ -1,18 +1,18 @@
 .edu-section {
-  background-color: #050110;
+  background-color: var(--color-bg-primary);
   background-image: 
     radial-gradient(circle at 85% 15%, rgba(176, 106, 255, 0.18) 0%, transparent 50%),
     radial-gradient(circle at 15% 85%, rgba(255, 0, 128, 0.15) 0%, transparent 50%),
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(var(--color-text-primary-rgb), 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--color-text-primary-rgb), 0.03) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
   background-position: 0 0, 0 0, -1px -1px, -1px -1px;
   min-height: 100vh;
   padding: 80px 10%;
-  color: white;
+  color: var(--color-text-primary);
   position: relative;
   overflow: hidden;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(var(--color-text-primary-rgb), 0.05);
 }
 
 .edu-title {
@@ -133,6 +133,15 @@
   margin: 2px 0 0;
   font-size: 0.85rem;
   color: #aaa;
+}
+
+/* Light Mode Overrides */
+body.light-mode .timeline-card {
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.1);
+}
+body.light-mode .timeline-card p {
+  color: #555 !important;
 }
 
 

@@ -113,10 +113,10 @@ const proficiencies = [
 const ProgressBar: React.FC<{ item: any, index: number }> = ({ item, index }) => (
   <div className="space-y-3 w-full">
     <div className="flex justify-between items-end">
-      <span className="text-sm font-bold tracking-widest text-gray-300 uppercase">{item.name}</span>
+      <span className="text-sm font-bold tracking-widest text-text-primary uppercase">{item.name}</span>
       <span className="text-xs font-mono text-pink-500">{item.level}%</span>
     </div>
-    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+    <div className="h-1.5 w-full bg-black/10 dark:bg-white/5 rounded-full overflow-hidden border border-black/10 dark:border-white/5">
       <motion.div 
         initial={{ width: 0 }}
         whileInView={{ width: `${item.level}%` }}
@@ -135,12 +135,12 @@ const TechUniverse: React.FC = () => {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
-    <section id="skills" className="relative min-h-screen bg-[#050110] text-white overflow-hidden py-20 px-6">
+    <section id="skills" className="relative min-h-screen bg-bg-primary text-text-primary overflow-hidden py-20 px-6">
       
       {/* 🌌 CINEMATIC BACKGROUND */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_30%,#1a0533,transparent_70%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle,#ffffff1a_1px,transparent_1px)] bg-[size:50px_50px] opacity-10" />
+        <div className="absolute top-0 left-0 w-full h-full tech-bg-glow" />
+        <div className="absolute inset-0 tech-bg-grid bg-[size:50px_50px] opacity-10" />
         
         {/* Retro Grid Sunset (Bottom) */}
         <div className="absolute bottom-0 left-0 w-full h-[600px] overflow-hidden">
@@ -189,8 +189,8 @@ const TechUniverse: React.FC = () => {
               onMouseLeave={() => setHovered(null)}
               className="relative p-6 rounded-xl transition-all duration-300 border backdrop-blur-sm group"
               style={{
-                background: hovered === category.id ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.02)",
-                borderColor: hovered === category.id ? category.borderColor : "rgba(255,255,255,0.08)",
+                background: hovered === category.id ? "var(--color-bg-secondary)" : "var(--color-bg-elevated)",
+                borderColor: hovered === category.id ? category.borderColor : "var(--color-border-main)",
               }}
             >
               {/* Header */}
@@ -202,11 +202,11 @@ const TechUniverse: React.FC = () => {
                   >
                     {category.icon}
                   </div>
-                  <span className="text-slate-100 text-base font-semibold tracking-wide">
+                  <span className="text-text-primary text-base font-semibold tracking-wide">
                     {category.title}
                   </span>
                 </div>
-                <span className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-[10px] text-slate-400 font-bold border border-white/5">
+                <span className="w-6 h-6 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-[10px] text-text-secondary font-bold border border-black/10 dark:border-white/5">
                   {category.skills.length}
                 </span>
               </div>

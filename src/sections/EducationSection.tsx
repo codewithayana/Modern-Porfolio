@@ -16,11 +16,11 @@ const EducationSection: React.FC = () => {
               <div className="timeline-card-main">
                 <div className="icon">🎓</div>
                 <div>
-                  <h3 style={{ color: "#ede0ff" }}>{item.degree}</h3>
-                  <p style={{ color: "#aaa" }}>
+                  <h3 className="text-text-primary text-lg font-bold">{item.degree}</h3>
+                  <p className="text-text-secondary mt-1">
                     {item.institution} <br/> 
-                    <span style={{ color: "#ff6eb4", fontSize: "0.8rem" }}>{item.period}</span> 
-                    {item.score && <span style={{ color: "#ff9a3c", fontSize: "0.8rem" }}> • Score: {item.score}</span>}
+                    <span className="text-pink-500 text-xs font-medium">{item.period}</span> 
+                    {item.score && <span className="text-orange-500 text-xs font-medium"> • Score: {item.score}</span>}
                   </p>
                 </div>
               </div>

@@ -28,7 +28,7 @@ const App = () => {
         style={{ scaleX }}
       />
       {/* Persistent Background Layer */}
-      <div className="fixed inset-0 bg-[#050110] z-[-1]" />
+      <div className="fixed inset-0 bg-bg-primary transition-colors duration-300 z-[-1]" />
       
       <main className="relative min-h-screen text-text-primary" style={{ perspective: '800px' }}>
          <Navbar />

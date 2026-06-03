@@ -113,7 +113,7 @@ const Planet: React.FC<PlanetProps> = ({ item, index }) => {
 
 const AboutMe: React.FC = () => {
   return (
-    <section id="about" className="relative min-h-screen bg-[#1b0524] py-20 px-6 md:px-20 overflow-hidden flex flex-col justify-center z-10">
+    <section id="about" className="relative min-h-screen bg-bg-primary py-20 px-6 md:px-20 overflow-hidden flex flex-col justify-center z-10">
       
       {/* Background Glows */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
@@ -148,7 +148,7 @@ const AboutMe: React.FC = () => {
           <div className="absolute w-[290px] h-[290px] md:w-[420px] md:h-[420px] rounded-full p-[6px] bg-gradient-to-tr from-[#ff0080] via-[#ff8c00] to-[#6a00ff] 
             shadow-[0_0_40px_rgba(255,0,128,0.6),inset_0_0_30px_rgba(255,255,255,0.2)]
           ">
-            <div className="w-full h-full rounded-full bg-[#1b0524] relative z-10" />
+            <div className="w-full h-full rounded-full bg-bg-primary relative z-10" />
           </div>
 
           {/* Profile Card with 3D Flip */}
@@ -177,7 +177,7 @@ const AboutMe: React.FC = () => {
               <Planet key={i} item={item} index={i} />
             ))}
           </motion.div>
-          <p className="absolute bottom-[-100px] text-sm text-gray-400 animate-pulse">
+          <p className="absolute bottom-[-100px] text-sm text-text-secondary animate-pulse">
             Click the planets to explore 
           </p>
         </motion.div>
@@ -195,15 +195,15 @@ const AboutMe: React.FC = () => {
             <span className="text-sm font-semibold tracking-widest text-pink-400 uppercase">Get To Know Me</span>
           </div>
 
-          <h2 className="text-5xl md:text-7xl font-bold text-white leading-tight">
+          <h2 className="text-5xl md:text-7xl font-bold text-text-primary leading-tight">
             About <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500">
               <ShuffleText text="Me" />
             </span>
           </h2>
 
-          <div className="space-y-6 text-gray-400 text-lg leading-relaxed max-w-xl">
+          <div className="space-y-6 text-text-secondary text-lg leading-relaxed max-w-xl">
             <p className="reveal-item">
-              I'm <span className="text-white font-medium">Ayana</span>, a passionate <span className="text-white font-medium">Full Stack Developer</span> who loves 
+              I'm <span className="text-text-primary font-medium">Ayana</span>, a passionate <span className="text-text-primary font-medium">Full Stack Developer</span> who loves 
               building modern, interactive and user-friendly web experiences.
             </p>
             <p className="reveal-item">
@@ -220,7 +220,7 @@ const AboutMe: React.FC = () => {
           <div className="pt-10 flex gap-6 items-start">
             <div className="text-5xl text-[#ff0080] font-serif leading-none opacity-80">“</div>
             <div className="space-y-2 border-l-2 border-white/10 pl-6">
-              <p className="text-gray-200 text-xl font-light italic leading-relaxed">
+              <p className="text-text-primary text-xl font-light italic leading-relaxed">
                 I don't just build websites,<br />
                 I create <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] to-[#ff8c00] font-bold">experiences.</span>
               </p>
@@ -230,7 +230,7 @@ const AboutMe: React.FC = () => {
       </div>
 
       {/* 🛰️ FLOATING TECHNICAL DATA */}
-      <div className="absolute inset-0 pointer-events-none opacity-20 font-mono text-[10px] text-gray-500 overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none opacity-20 font-mono text-[10px] text-text-secondary overflow-hidden">
         {[...Array(10)].map((_, i) => (
           <motion.div
             key={i}

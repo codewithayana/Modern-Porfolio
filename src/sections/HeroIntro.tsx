@@ -71,7 +71,7 @@ const HeroIntro: React.FC = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative h-[800vh] w-full bg-[#050110]">
+    <div ref={containerRef} className="relative h-[800vh] w-full bg-bg-primary">
       {/* Sticky Viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         
@@ -205,7 +205,7 @@ const HeroIntro: React.FC = () => {
             style={{ opacity: revealOpacity, scale: revealScale, y: revealY }}
             className="absolute left-[130vw] top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-30"
           >
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white drop-shadow-[0_0_50px_rgba(255,255,255,0.3)]">
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-text-primary drop-shadow-[0_0_50px_rgba(255,255,255,0.3)]">
               AYANA DINESH
             </h1>
             <p className="mt-4 text-xl md:text-2xl font-light tracking-[0.8em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#ff0080] via-[#ff8c00] to-[#6a00ff]">
@@ -240,11 +240,11 @@ const HeroIntro: React.FC = () => {
         {/* Scroll Hint */}
         <motion.div
           style={{ opacity: useTransform(smoothProgress, [0, 0.1], [1, 0]) }}
-          className="absolute bottom-10 left-10 flex flex-col items-center text-white/50"
+          className="absolute bottom-10 left-10 flex flex-col items-center text-text-secondary"
         >
           <span className="text-xs tracking-widest uppercase">Scroll to Merge</span>
           <div className="mt-2 w-5 h-8 border border-white/50 rounded-full flex items-start justify-center p-1 text-[#ff0080]">
-            <div className="w-1 h-2 bg-[#ff0080] rounded-full animate-bounce" />
+            <div className="w-1 h-2 bg-accent rounded-full animate-bounce" />
           </div>
         </motion.div>
 
