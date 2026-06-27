@@ -68,3 +68,77 @@ body {
     background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
   }
 }
+
+/* 375 Studio Inspired Hover Effects */
+.studio-hover-link {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.studio-hover-link::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.2);
+  width: 140%;
+  height: 180%;
+  background-image: radial-gradient(circle, currentColor 1.5px, transparent 2px);
+  background-size: 6px 6px;
+  opacity: 0;
+  z-index: -1;
+  border-radius: 8px;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+  pointer-events: none;
+}
+
+.studio-hover-link:hover::before {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 0.15;
+}
+
+body.light-mode .studio-hover-link:hover::before {
+  opacity: 0.25;
+}
+
+.studio-hover-text {
+  display: inline-block;
+  transition: all 0.2s ease-out;
+}
+
+.studio-hover-link:hover .studio-hover-text,
+.studio-hover-text:hover {
+  -webkit-text-stroke: 1px currentColor;
+  color: transparent !important;
+  background: linear-gradient(90deg, #b06aff, #ff6eb4, #ff9a3c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 3px 3px 0px var(--color-text-primary);
+  transform: translate(-2px, -2px);
+}
+
+/* Animated Underline Effect */
+.hover-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: currentColor;
+  transform-origin: bottom right;
+  transition: transform 0.3s cubic-bezier(0.86, 0, 0.07, 1);
+}
+
+.hover-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}

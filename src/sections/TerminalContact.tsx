@@ -197,6 +197,16 @@ const TerminalContact: React.FC = () => {
                 </span>
                 </div>
               )}
+
+               {linesVisible >= 8 && (
+                <div className="terminal-output-row">
+                  <span className="output-arrow green">▶</span>
+                  <span className="output-label">WhatsApp</span>
+                  <span className="output-value">
+                    <a href="tel:+918078028796"> 8129407173</a>
+                </span>
+                </div>
+              )}
             </div>
 
             

@@ -11,6 +11,7 @@ import TerminalContact from './sections/TerminalContact'
 import SmoothScroll from './components/SmoothScroll'
 import { useScrollReveal } from './hooks/useScrollReveal'
 import BackToTop from './components/BackToTop'
+import Footer from './components/Footer'
 
 const App = () => {
   useScrollReveal();
@@ -41,6 +42,7 @@ const App = () => {
          <div className="reveal"><Certifications /></div>
          <div className="reveal"><TerminalContact /></div>
       </main>
+      <Footer />
       <BackToTop />
     </SmoothScroll>
   )

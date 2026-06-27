@@ -47,9 +47,9 @@ const Navbar: React.FC = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className={`text-sm font-medium transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-black' : 'text-gray-400 hover:text-white'}`}
+              className={`hover-underline text-sm font-medium transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-black' : 'text-gray-400 hover:text-white'}`}
             >
-              <ShuffleText text={item} />
+              <ShuffleText className="studio-hover-text" text={item} />
             </motion.a>
           ))}
         </div>
@@ -73,12 +73,12 @@ const Navbar: React.FC = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <button className={`flex items-center gap-2 px-5 py-2.5 rounded-full border text-sm font-medium transition-all group ${
+            <button className={`studio-hover-link flex items-center gap-2 px-5 py-2.5 rounded-full border text-sm font-medium transition-all group ${
               theme === 'light'
                 ? 'bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100'
                 : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
             }`}>
-              <ShuffleText text="Download CV" />
+              <ShuffleText className="studio-hover-text" text="Download CV" />
               <Download className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
             </button>
           </motion.div>
