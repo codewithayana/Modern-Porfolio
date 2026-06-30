@@ -1,6 +1,6 @@
 import React from "react";
 import "./Education.css"; // Reuse the timeline styles
-import { education } from "./education";
+import { education } from "../data/education";
 
 const EducationSection: React.FC = () => {
   return (

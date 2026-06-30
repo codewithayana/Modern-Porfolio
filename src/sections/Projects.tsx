@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { projects } from './projects';
+import { projects } from '../data/projects';
 import '../styles/Projects.css';
 
 const Projects: React.FC = () => {

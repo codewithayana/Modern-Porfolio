@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../hooks/useTheme';
 
 const skillsData = [
   {
@@ -133,6 +134,7 @@ const ProgressBar: React.FC<{ item: any, index: number }> = ({ item, index }) =>
 
 const TechUniverse: React.FC = () => {
   const [hovered, setHovered] = useState<number | null>(null);
+  const { theme } = useTheme();
 
   return (
     <section id="skills" className="relative min-h-screen bg-bg-primary text-text-primary overflow-hidden py-20 px-6">
@@ -221,7 +223,7 @@ const TechUniverse: React.FC = () => {
                     style={{
                       borderColor: category.tagBorder,
                       background: category.tagBg,
-                      color: category.tagColor,
+                      color: theme === 'light' ? category.borderColor : category.tagColor,
                     }}
                   >
                     {skill}

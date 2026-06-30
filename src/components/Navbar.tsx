@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ShuffleText from './ShuffleText'
 import { motion } from 'framer-motion';
-import { Download, Sun, Moon } from 'lucide-react';
+import { Download, Sun, Moon, Check } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [isDownloaded, setIsDownloaded] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -73,13 +74,35 @@ const Navbar: React.FC = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <button className={`studio-hover-link flex items-center gap-2 px-5 py-2.5 rounded-full border text-sm font-medium transition-all group ${
+            <button 
+              onClick={() => {
+                setIsDownloaded(true);
+                
+                // Trigger actual file download
+                const link = document.createElement('a');
+                link.href = '/resume.pdf';
+                link.download = 'Ayana_Dinesh_Resume.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                setTimeout(() => setIsDownloaded(false), 3000);
+              }}
+              className={`studio-hover-link flex items-center gap-2 px-5 py-2.5 rounded-full border text-sm font-medium transition-all group ${
               theme === 'light'
                 ? 'bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100'
                 : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
-            }`}>
-              <ShuffleText className="studio-hover-text" text="Download CV" />
-              <Download className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+            } ${isDownloaded ? 'border-green-500/50 bg-green-500/10 text-green-500' : ''}`}>
+              <ShuffleText 
+                key={isDownloaded ? 'downloaded' : 'download'} 
+                className={`studio-hover-text ${isDownloaded ? 'text-green-500' : ''}`} 
+                text={isDownloaded ? "Downloaded!" : "Download CV"} 
+              />
+              {isDownloaded ? (
+                <Check className="w-4 h-4 text-green-500" />
+              ) : (
+                <Download className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+              )}
             </button>
           </motion.div>
         </div>

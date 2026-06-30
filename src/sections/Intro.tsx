@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTheme } from '../hooks/useTheme'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import lottie from 'lottie-web'
@@ -92,7 +93,8 @@ class Particle {
   }
 }
 
-const VettvangurIntro: React.FC = () => {
+const Intro: React.FC = () => {
+  const { theme } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const indicatorRef = useRef<HTMLDivElement>(null)
@@ -233,7 +235,7 @@ const VettvangurIntro: React.FC = () => {
         width: '100vw',
         height: '100vh',
         overflow: 'hidden',
-        background: 'radial-gradient(circle at 50% 40%,#0b0418, #05010a)',
+        background: theme === 'light' ? 'radial-gradient(circle at 50% 40%, #ffffff, #f3f4f6)' : 'radial-gradient(circle at 50% 40%,#0b0418, #05010a)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -288,31 +290,32 @@ const VettvangurIntro: React.FC = () => {
        {/* Name Reveal */}
 <AnimatePresence>
   {showName && (
-    <motion.div
+  <motion.div
   initial={{ opacity: 0, scale: 0.8, filter: 'blur(20px)', y: 40 }}
-  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', y: 0 }}  // ← y: -80 to y: 0
+  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', y: 0 }}
   transition={{ duration: 1, ease: 'easeOut' }}
   style={{
     position: 'absolute',
-    top: '50%',
-    left: '5%',                      // ← pin to left
-    transform: 'translateY(-50%)',   // ← vertically center
+    top: 0,
+    bottom: 0,
+    left: '5%',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-start',        // ← left-align children
+    justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 20,
   }}
 >
   <h1
     style={{
-      fontSize: 'clamp(2rem, 5vw, 4.5rem)',   // ← much smaller than before
+      fontSize: 'clamp(2rem, 5vw, 4.5rem)',
       fontWeight: 900,
-      color: '#ffffff',
+      color: theme === 'light' ? '#111827' : '#ffffff',
       letterSpacing: '0.12em',
       lineHeight: 1.1,
       fontFamily: "'Courier New', monospace",
       whiteSpace: 'nowrap',
-      textShadow: '0 0 40px rgba(0,240,255,0.5), 0 0 80px rgba(255,0,128,0.3)',
+      textShadow: theme === 'light' ? '0 0 40px rgba(0,240,255,0.2), 0 0 80px rgba(255,0,128,0.15)' : '0 0 40px rgba(0,240,255,0.5), 0 0 80px rgba(255,0,128,0.3)',
       margin: 0,
     }}
   >
@@ -359,55 +362,51 @@ const VettvangurIntro: React.FC = () => {
           }}
         />
       </motion.div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        ref={indicatorRef}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 1 }}
+        style={{
+          position: 'absolute',
+          bottom: '2.5rem',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+        }}
+      >
+        <div
+          style={{
+            width: 1,
+            height: 48,
+            background: theme === 'light'
+              ? 'linear-gradient(to bottom, rgba(0,0,0,0.08), rgba(0,0,0,0.45), transparent)'
+              : 'linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(255,255,255,0.45), transparent)',
+          }}
+        />
+        <span
+          style={{
+            fontSize: '0.48rem',
+            letterSpacing: '0.45em',
+            textTransform: 'uppercase',
+            color: theme === 'light' ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.2)',
+            fontFamily: "'Courier New', monospace",
+          }}
+        >
+          scroll
+        </span>
+      </motion.div>
     </motion.div>
   )}
 </AnimatePresence>
       </div>
-
-      {/* Scroll Indicator */}
-      <AnimatePresence>
-        {showName && (
-          <motion.div
-            ref={indicatorRef}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 1 }}
-            style={{
-              position: 'absolute',
-              bottom: '2.5rem',
-              left: '25%',
-              transform: 'translateX(-50%)',
-              zIndex: 20,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 8,
-            }}
-          >
-            <div
-              style={{
-                width: 1,
-                height: 48,
-                background:
-                  'linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(255,255,255,0.45), transparent)',
-              }}
-            />
-            <span
-              style={{
-                fontSize: '0.48rem',
-                letterSpacing: '0.45em',
-                textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.2)',
-                fontFamily: "'Courier New', monospace",
-              }}
-            >
-              scroll
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   )
 }
 
-export default VettvangurIntro
+export default Intro

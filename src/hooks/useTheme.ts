@@ -8,11 +8,19 @@ export function useTheme() {
     return 'dark';
   });
 
+  // Sync state across all instances of the hook
+  useEffect(() => {
+    const handleThemeChange = (e: any) => {
+      setTheme(e.detail);
+    };
+    window.addEventListener('theme-change', handleThemeChange);
+    return () => window.removeEventListener('theme-change', handleThemeChange);
+  }, []);
+
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
-    // Also toggle a class on body for easier CSS targeting without modifying root
     if (theme === 'light') {
       document.body.classList.add('light-mode');
       document.body.classList.remove('dark-mode');
@@ -24,7 +32,10 @@ export function useTheme() {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('theme-change', { detail: newTheme }));
+    }
   };
 
   return { theme, toggleTheme };

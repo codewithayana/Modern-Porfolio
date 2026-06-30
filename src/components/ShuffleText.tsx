@@ -39,11 +39,14 @@ const ShuffleText: React.FC<ShuffleTextProps> = ({ text, className = "" }) => {
 
   return (
     <span 
-      className={className}
+      className="relative inline-block"
       onMouseEnter={startShuffle}
       onMouseLeave={stopShuffle}
     >
-      {displayText}
+      <span className="invisible whitespace-nowrap">{text}</span>
+      <span className={`absolute left-0 top-0 whitespace-nowrap ${className}`} aria-hidden="true">
+        {displayText}
+      </span>
     </span>
   );
 };
