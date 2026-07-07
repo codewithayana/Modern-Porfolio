@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import ShuffleText from './ShuffleText'
-import { motion } from 'framer-motion';
-import { Download, Sun, Moon, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Download, Sun, Moon, Check, Menu, X } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isDownloaded, setIsDownloaded] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -22,10 +23,10 @@ const Navbar: React.FC = () => {
   return (
     <nav 
       className={`fixed top-0 left-0 w-full z-[100] transition-all duration-300 ${
-        scrolled 
+        scrolled || mobileMenuOpen
           ? theme === 'light' 
-            ? 'py-4 bg-white/80 backdrop-blur-lg border-b border-gray-200' 
-            : 'py-4 bg-[#050110]/80 backdrop-blur-lg border-b border-white/10'
+            ? 'py-4 bg-white/90 backdrop-blur-lg border-b border-gray-200' 
+            : 'py-4 bg-[#050110]/90 backdrop-blur-lg border-b border-white/10'
           : 'py-6 bg-transparent'
       }`}
     >
@@ -39,8 +40,8 @@ const Navbar: React.FC = () => {
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">Ayana</span>
         </motion.div>
 
-        {/* Nav Items */}
-        <div className="hidden md:flex items-center gap-8">
+        {/* Desktop Nav Items */}
+        <div className="hidden lg:flex items-center gap-8">
           {navItems.map((item, idx) => (
             <motion.a
               key={item}
@@ -56,7 +57,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
           <motion.button
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -66,6 +67,7 @@ const Navbar: React.FC = () => {
                 ? 'bg-gray-100 border-gray-200 text-gray-700 hover:bg-gray-200' 
                 : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
             }`}
+            aria-label="Toggle Theme"
           >
             {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
           </motion.button>
@@ -73,19 +75,17 @@ const Navbar: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
+            className="hidden sm:block"
           >
             <button 
               onClick={() => {
                 setIsDownloaded(true);
-                
-                // Trigger actual file download
                 const link = document.createElement('a');
                 link.href = '/resume.pdf';
                 link.download = 'Ayana_Dinesh_Resume.pdf';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-
                 setTimeout(() => setIsDownloaded(false), 3000);
               }}
               className={`studio-hover-link flex items-center gap-2 px-5 py-2.5 rounded-full border text-sm font-medium transition-all group ${
@@ -105,8 +105,69 @@ const Navbar: React.FC = () => {
               )}
             </button>
           </motion.div>
+
+          {/* Mobile Menu Button */}
+          <motion.button
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className={`lg:hidden p-2 rounded-full border transition-all ${
+              theme === 'light' 
+                ? 'bg-gray-100 border-gray-200 text-gray-700 hover:bg-gray-200' 
+                : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
+            }`}
+            aria-label="Toggle Menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </motion.button>
         </div>
       </div>
+
+      {/* Mobile Dropdown Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="lg:hidden overflow-hidden"
+          >
+            <div className={`px-6 py-4 flex flex-col gap-4 border-t ${theme === 'light' ? 'border-gray-200 bg-white/95' : 'border-white/10 bg-[#050110]/95'}`}>
+              {navItems.map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`text-sm font-medium transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-black' : 'text-gray-400 hover:text-white'}`}
+                >
+                  {item}
+                </a>
+              ))}
+              
+              <button 
+                onClick={() => {
+                  setIsDownloaded(true);
+                  const link = document.createElement('a');
+                  link.href = '/resume.pdf';
+                  link.download = 'Ayana_Dinesh_Resume.pdf';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  setTimeout(() => setIsDownloaded(false), 3000);
+                }}
+                className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border text-sm font-medium transition-all sm:hidden mt-2 ${
+                theme === 'light'
+                  ? 'bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100'
+                  : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
+              }`}
+              >
+                {isDownloaded ? "Downloaded!" : "Download CV"}
+                {isDownloaded ? <Check className="w-4 h-4" /> : <Download className="w-4 h-4" />}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
