@@ -19,6 +19,9 @@ const SmoothScroll: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       requestAnimationFrame(raf);
     }
 
+    // @ts-ignore
+    window.lenis = lenis;
+
     requestAnimationFrame(raf);
 
     return () => {

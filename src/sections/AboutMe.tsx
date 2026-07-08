@@ -197,7 +197,7 @@ const AboutMe: React.FC = () => {
 
           <h2 className="text-5xl md:text-7xl font-bold text-text-primary leading-tight">
             About <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500">
-              <ShuffleText text="Me" />
+              Me
             </span>
           </h2>
 

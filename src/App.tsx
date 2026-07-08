@@ -34,13 +34,13 @@ const App = () => {
       <main className="relative min-h-screen text-text-primary" style={{ perspective: '800px' }}>
          <Navbar />
          <Intro />
-         <div className="reveal"><AboutMe /></div>
-         <div className="reveal"><TechUniverse /></div>
-         <div className="reveal"><Projects /></div>
-         <div className="reveal"><Achievements /></div>
-         <div className="reveal"><EducationSection /></div>
-         <div className="reveal"><Certifications /></div>
-         <div className="reveal"><TerminalContact /></div>
+         <div id="nav-about"><div className="reveal"><AboutMe /></div></div>
+         <div id="nav-skills"><div className="reveal"><TechUniverse /></div></div>
+         <div id="nav-projects"><div className="reveal"><Projects /></div></div>
+         <div id="nav-achievements"><div className="reveal"><Achievements /></div></div>
+         <div id="nav-education"><div className="reveal"><EducationSection /></div></div>
+         <div id="nav-certifications"><div className="reveal"><Certifications /></div></div>
+         <div id="nav-contacts"><div className="reveal"><TerminalContact /></div></div>
       </main>
       <Footer />
       <BackToTop />

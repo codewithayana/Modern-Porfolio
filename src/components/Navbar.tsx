@@ -18,7 +18,23 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = ['About', 'Skills', 'Projects','Achievements','Educations', 'Certifications', 'Contacts'];
+  const navItems = ['About', 'Skills', 'Projects','Achievements','Education', 'Certifications', 'Contacts'];
+
+  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const target = document.getElementById(`nav-${id}`) || document.getElementById(id);
+    if (target) {
+      // @ts-ignore
+      if (window.lenis) {
+        // @ts-ignore
+        window.lenis.scrollTo(target, { offset: -80 }); // offset for the fixed navbar
+      } else {
+        const y = target.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+    setMobileMenuOpen(false);
+  };
 
   return (
     <nav 
@@ -42,18 +58,22 @@ const Navbar: React.FC = () => {
 
         {/* Desktop Nav Items */}
         <div className="hidden lg:flex items-center gap-8">
-          {navItems.map((item, idx) => (
-            <motion.a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className={`hover-underline text-sm font-medium transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-black' : 'text-gray-400 hover:text-white'}`}
-            >
-              <ShuffleText className="studio-hover-text" text={item} />
-            </motion.a>
-          ))}
+          {navItems.map((item, idx) => {
+            const id = item.toLowerCase();
+            return (
+              <motion.a
+                key={item}
+                href={`#${id}`}
+                onClick={(e) => handleScrollTo(e, id)}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className={`hover-underline text-sm font-medium transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-black' : 'text-gray-400 hover:text-white'}`}
+              >
+                <ShuffleText className="studio-hover-text" text={item} />
+              </motion.a>
+            );
+          })}
         </div>
 
         {/* Actions */}
@@ -133,16 +153,19 @@ const Navbar: React.FC = () => {
             className="lg:hidden overflow-hidden"
           >
             <div className={`px-6 py-4 flex flex-col gap-4 border-t ${theme === 'light' ? 'border-gray-200 bg-white/95' : 'border-white/10 bg-[#050110]/95'}`}>
-              {navItems.map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`text-sm font-medium transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-black' : 'text-gray-400 hover:text-white'}`}
-                >
-                  {item}
-                </a>
-              ))}
+              {navItems.map((item) => {
+                const id = item.toLowerCase();
+                return (
+                  <a
+                    key={item}
+                    href={`#${id}`}
+                    onClick={(e) => handleScrollTo(e, id)}
+                    className={`text-sm font-medium transition-colors ${theme === 'light' ? 'text-gray-600 hover:text-black' : 'text-gray-400 hover:text-white'}`}
+                  >
+                    {item}
+                  </a>
+                );
+              })}
               
               <button 
                 onClick={() => {
