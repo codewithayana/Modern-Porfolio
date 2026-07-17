@@ -1,412 +1,245 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useTheme } from '../hooks/useTheme'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import lottie from 'lottie-web'
-import archerAnimation from '../assets/archer.json'
+import React, { useRef, useMemo, useEffect, useState } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Points, PointMaterial, Float, MeshDistortMaterial } from '@react-three/drei';
+import * as THREE from 'three';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../hooks/useTheme';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
 
-// ── Cybersunset: #ff0080 → #ff8c00 → #6a00ff ──
-function csColor(t: number, a: number): string {
-  let r: number, g: number, b: number
-  if (t < 0.5) {
-    const p = t / 0.5
-    r = 255
-    g = Math.round(p * 140)
-    b = Math.round(128 - p * 128)
-  } else {
-    const p = (t - 0.5) / 0.5
-    r = Math.round(255 - p * 149)
-    g = Math.round(140 - p * 140)
-    b = Math.round(p * 255)
-  }
-  return `rgba(${r},${g},${b},${a})`
-}
+// --- 3D Components ---
 
-// ── Particle class ──
-class Particle {
-  x = 0
-  y = 0
-  vx = 0
-  vy = 0
-  r = 0
-  t = 0
-  a = 0
-  life = 0
-  maxLife = 0
-  W: number
-  H: number
-
-  constructor(W: number, H: number, init = false) {
-    this.W = W
-    this.H = H
-    this.reset(init)
-  }
-
-  reset(init = false) {
-    this.x = Math.random() * this.W
-    this.y = init ? Math.random() * this.H : Math.random() < 0.5 ? -4 : this.H + 4
-    this.r = Math.random() * 1.8 + 0.3
-    this.vx = (Math.random() - 0.5) * 0.4
-    this.vy = (Math.random() - 0.5) * 0.4
-    this.t = Math.random()
-    this.a = Math.random() * 0.6 + 0.2
-    this.life = 0
-    this.maxLife = 200 + Math.random() * 400
-  }
-
-  update(mx: number, my: number) {
-    const dx = mx - this.x,
-      dy = my - this.y
-    const dist = Math.sqrt(dx * dx + dy * dy)
-    if (dist < 200) {
-      this.vx += dx * 0.00008
-      this.vy += dy * 0.00008
+const StarField = ({ theme }: { theme: string }) => {
+  const ref = useRef<THREE.Points>(null!);
+  
+  const [positions] = useMemo(() => {
+    const count = 4000;
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const r = 10 + Math.random() * 40;
+      const theta = 2 * Math.PI * Math.random();
+      const phi = Math.acos(2 * Math.random() - 1);
+      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      positions[i * 3 + 2] = r * Math.cos(phi);
     }
-    this.x += this.vx
-    this.y += this.vy
-    this.life++
-    if (
-      this.life > this.maxLife ||
-      this.x < 0 ||
-      this.x > this.W ||
-      this.y < 0 ||
-      this.y > this.H
-    ) {
-      this.reset(false)
-    }
-  }
+    return [positions];
+  }, []);
 
-  draw(ctx: CanvasRenderingContext2D) {
-    const fade =
-      this.life < 30
-        ? this.life / 30
-        : this.life > this.maxLife - 30
-          ? (this.maxLife - this.life) / 30
-          : 1
-    ctx.beginPath()
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2)
-    ctx.fillStyle = csColor(this.t, this.a * fade)
-    ctx.fill()
-  }
-}
+  useFrame(() => {
+    if (ref.current) {
+      ref.current.rotation.x -= 0.0003;
+      ref.current.rotation.y -= 0.0005;
+    }
+  });
+
+  const color = theme === 'light' ? '#ff8c00' : '#ff0080';
+
+  return (
+    <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
+      <PointMaterial
+        transparent
+        color={color}
+        size={0.06}
+        sizeAttenuation={true}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </Points>
+  );
+};
+
+const FloatingOrb = ({ theme }: { theme: string }) => {
+  const orbRef = useRef<THREE.Mesh>(null!);
+  const glowColor = theme === 'light' ? '#00bfff' : '#00f0ff';
+  const ring1Color = theme === 'light' ? '#0088ff' : '#00bfff';
+  const ring2Color = theme === 'light' ? '#00f0ff' : '#ffffff';
+  const envColor = theme === 'light' ? '#f0f0f0' : '#0a0a1a';
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    if (orbRef.current) {
+      orbRef.current.rotation.y = Math.sin(t / 4) * 0.5;
+      orbRef.current.rotation.z = Math.sin(t / 4) * 0.5;
+    }
+  });
+
+  return (
+    <Float speed={2} rotationIntensity={1} floatIntensity={1.5} position={[0, 0, -2]}>
+      {/* Core Orb */}
+      <mesh ref={orbRef} scale={1.2}>
+        <icosahedronGeometry args={[1, 15]} />
+        <MeshDistortMaterial 
+          color={envColor} 
+          emissive={glowColor}
+          emissiveIntensity={0.8}
+          clearcoat={1} 
+          clearcoatRoughness={0.1}
+          metalness={0.8}
+          roughness={0.2}
+          wireframe={theme === 'dark'}
+          distort={0.4} 
+          speed={2.5} 
+        />
+      </mesh>
+      
+      {/* Outer Rotating Rings */}
+      <Float speed={1.5} rotationIntensity={2} floatIntensity={0.5}>
+        <mesh rotation-x={Math.PI / 2} scale={1.2}>
+          <torusGeometry args={[3.2, 0.015, 16, 100]} />
+          <meshBasicMaterial color={ring1Color} wireframe opacity={0.4} transparent />
+        </mesh>
+      </Float>
+      <Float speed={2.5} rotationIntensity={3} floatIntensity={0}>
+        <mesh rotation-y={Math.PI / 3} rotation-x={Math.PI / 4} scale={1.4}>
+          <torusGeometry args={[2.8, 0.01, 16, 100]} />
+          <meshBasicMaterial color={ring2Color} wireframe opacity={0.3} transparent />
+        </mesh>
+      </Float>
+    </Float>
+  );
+};
+
+const CameraController = () => {
+  useFrame((state) => {
+    const { pointer, camera } = state;
+    // Smooth camera movement based on mouse
+    const targetX = (pointer.x * 1.5);
+    const targetY = (pointer.y * 1.5);
+    camera.position.x += (targetX - camera.position.x) * 0.05;
+    camera.position.y += (targetY - camera.position.y) * 0.05;
+    camera.lookAt(0, 0, 0);
+  });
+  return null;
+};
+
+// --- Main Intro Component ---
 
 const Intro: React.FC = () => {
   const { theme } = useTheme();
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const indicatorRef = useRef<HTMLDivElement>(null)
-  const lottieContainerRef = useRef<HTMLDivElement>(null)
-  const mouseRef = useRef({ x: 0, y: 0 })
-  const rafRef = useRef<number>(0)
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
 
-  const [showName, setShowName] = useState(false)
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.6], [1, 0.85]);
+  const y = useTransform(scrollYProgress, [0, 0.6], [0, 150]);
 
-  // Load Lottie and Trigger name reveal after the arrow hits (around 3 seconds into the animation)
+  // Decode Text Animation
+  const [text, setText] = useState("");
+  const finalString = "AYANA DINESH";
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+  
   useEffect(() => {
-    let anim: any
-    if (lottieContainerRef.current) {
-      anim = lottie.loadAnimation({
-        container: lottieContainerRef.current,
-        renderer: 'svg',
-        loop: false,
-        autoplay: true,
-        animationData: archerAnimation,
-      })
-    }
-
-    const t1 = setTimeout(() => setShowName(true), 3200)
-    return () => {
-      clearTimeout(t1)
-      if (anim) anim.destroy()
-    }
-  }, [])
-
-  // Particle canvas animation
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')!
-
-    let W = 0,
-      H = 0
-    let particles: Particle[] = []
-
-    const resize = () => {
-      W = canvas.width = window.innerWidth
-      H = canvas.height = window.innerHeight
-      particles = Array.from({ length: 180 }, (_, i) => new Particle(W, H, i < 100))
-    }
-    resize()
-    window.addEventListener('resize', resize)
-
-    const drawConnections = () => {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x
-          const dy = particles[i].y - particles[j].y
-          const d = Math.sqrt(dx * dx + dy * dy)
-          if (d < 100) {
-            const a = (1 - d / 100) * 0.18
-            const t = (particles[i].t + particles[j].t) / 2
-            ctx.beginPath()
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.strokeStyle = csColor(t, a)
-            ctx.lineWidth = 0.5
-            ctx.stroke()
-          }
+    let iteration = 0;
+    let interval: NodeJS.Timeout;
+    
+    const timeout = setTimeout(() => {
+      interval = setInterval(() => {
+        setText((prev) => 
+          finalString.split("").map((letter, index) => {
+            if (index < iteration) {
+              return finalString[index];
+            }
+            return letters[Math.floor(Math.random() * letters.length)];
+          }).join("")
+        );
+        
+        if (iteration >= finalString.length) {
+          clearInterval(interval);
         }
-      }
-    }
-
-    const loop = () => {
-      ctx.clearRect(0, 0, W, H)
-      drawConnections()
-      particles.forEach((p) => {
-        p.update(mouseRef.current.x, mouseRef.current.y)
-        p.draw(ctx)
-      })
-      rafRef.current = requestAnimationFrame(loop)
-    }
-    loop()
-
-    const onMove = (e: MouseEvent) => {
-      mouseRef.current.x = e.clientX
-      mouseRef.current.y = e.clientY
-    }
-    window.addEventListener('mousemove', onMove)
+        
+        iteration += 1 / 3;
+      }, 40);
+    }, 400);
 
     return () => {
-      cancelAnimationFrame(rafRef.current)
-      window.removeEventListener('resize', resize)
-      window.removeEventListener('mousemove', onMove)
-    }
-  }, [])
-
-  // GSAP scroll animations
-  useEffect(() => {
-    if (!contentRef.current) return
-
-    gsap.to(contentRef.current, {
-      scrollTrigger: {
-        trigger: contentRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true,
-      },
-      y: -150,
-      scale: 0.85,
-      opacity: 0,
-      filter: 'blur(15px)',
-    })
-
-    if (indicatorRef.current) {
-      gsap.to(indicatorRef.current, {
-        scrollTrigger: {
-          trigger: contentRef.current,
-          start: 'top top',
-          end: '20% top',
-          scrub: true,
-        },
-        opacity: 0,
-        y: 50,
-      })
-    }
-
-    gsap.to(canvasRef.current, {
-      scrollTrigger: {
-        trigger: contentRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true,
-      },
-      y: 200,
-      scale: 1.1,
-    })
-  }, [])
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, []);
 
   return (
-    <section
-      style={{
-        position: 'relative',
-        width: '100vw',
-        height: '100vh',
-        overflow: 'hidden',
-        background: theme === 'light' ? 'radial-gradient(circle at 50% 40%, #ffffff, #f3f4f6)' : 'radial-gradient(circle at 50% 40%,#0b0418, #05010a)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        userSelect: 'none',
-      }}
+    <section 
+      ref={containerRef}
+      className={`relative w-full h-screen overflow-hidden ${theme === 'light' ? 'bg-[#f8f9fa]' : 'bg-[#020005]'}`}
+      style={{ userSelect: 'none' }}
     >
-      {/* Background Layer */}
-      <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, zIndex: 0 }} />
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 1,
-          pointerEvents: 'none',
-          backgroundImage:
-            'linear-gradient(rgba(255,0,128,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,0,128,0.04) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-          maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 75%)',
-          WebkitMaskImage:
-            'radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 75%)',
-        }}
-      />
-
-      {/* Main Content Area */}
-      <div
-        ref={contentRef}
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {/* Archer Lottie Animation */}
-        <div
-          ref={lottieContainerRef}
-          style={{
-            position: 'relative',
-            width: '100%',
-            maxWidth: '1200px',
-            minHeight: '400px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            pointerEvents: 'none',
-          }}
-        />
-
-       {/* Name Reveal */}
-<AnimatePresence>
-  {showName && (
-  <motion.div
-  initial={{ opacity: 0, scale: 0.8, filter: 'blur(20px)', y: 40 }}
-  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', y: 0 }}
-  transition={{ duration: 1, ease: 'easeOut' }}
-  style={{
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: '5%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 20,
-  }}
->
-  <h1
-    style={{
-      fontSize: 'clamp(2rem, 5vw, 4.5rem)',
-      fontWeight: 900,
-      color: theme === 'light' ? '#111827' : '#ffffff',
-      letterSpacing: '0.12em',
-      lineHeight: 1.1,
-      fontFamily: "'Courier New', monospace",
-      whiteSpace: 'nowrap',
-      textShadow: theme === 'light' ? '0 0 40px rgba(0,240,255,0.2), 0 0 80px rgba(255,0,128,0.15)' : '0 0 40px rgba(0,240,255,0.5), 0 0 80px rgba(255,0,128,0.3)',
-      margin: 0,
-    }}
-  >
-    AYANA DINESH
-  </h1>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.8 }}
-        style={{
-          marginTop: '1.4rem',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-        }}
-      >
-        <div
-          style={{
-            width: 40,
-            height: 1,
-            background: 'linear-gradient(90deg, transparent, #ff0080)',
-          }}
-        />
-        <span
-          style={{
-            fontSize: 'clamp(0.55rem, 1.2vw, 0.68rem)',
-            fontWeight: 700,
-            letterSpacing: '0.55em',
-            textTransform: 'uppercase',
-            fontFamily: "'Courier New', monospace",
-            background: 'linear-gradient(90deg, #00F0FF, #ff0080)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Full Stack Developer
-        </span>
-        <div
-          style={{
-            width: 40,
-            height: 1,
-            background: 'linear-gradient(90deg, #ff0080, transparent)',
-          }}
-        />
-      </motion.div>
-
-      {/* Scroll Indicator */}
-      <motion.div
-        ref={indicatorRef}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 1 }}
-        style={{
-          position: 'absolute',
-          bottom: '2.5rem',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 8,
-        }}
-      >
-        <div
-          style={{
-            width: 1,
-            height: 48,
-            background: theme === 'light'
-              ? 'linear-gradient(to bottom, rgba(0,0,0,0.08), rgba(0,0,0,0.45), transparent)'
-              : 'linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(255,255,255,0.45), transparent)',
-          }}
-        />
-        <span
-          style={{
-            fontSize: '0.48rem',
-            letterSpacing: '0.45em',
-            textTransform: 'uppercase',
-            color: theme === 'light' ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.2)',
-            fontFamily: "'Courier New', monospace",
-          }}
-        >
-          scroll
-        </span>
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
+      {/* 3D Background */}
+      <div className="absolute inset-0 z-0 cursor-crosshair">
+        <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
+          <ambientLight intensity={theme === 'light' ? 1.5 : 0.5} />
+          <directionalLight position={[10, 10, 5]} intensity={1.2} />
+          <StarField theme={theme} />
+          <FloatingOrb theme={theme} />
+          <CameraController />
+        </Canvas>
       </div>
-    </section>
-  )
-}
 
-export default Intro
+      <style>
+        {`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');`}
+      </style>
+
+      {/* Vignette Overlay */}
+      <div className={`absolute inset-0 z-[1] pointer-events-none transition-colors duration-700 ${theme === 'light' ? 'bg-[radial-gradient(circle_at_center,transparent_0%,rgba(248,249,250,0.7)_100%)]' : 'bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,0,5,0.8)_100%)]'}`} />
+
+      {/* Foreground Content */}
+      <motion.div 
+        style={{ opacity, scale, y }}
+        className="relative z-10 w-full h-full flex flex-col items-center justify-center pointer-events-none"
+      >
+        <div className="flex flex-col items-center text-center mt-10">
+          
+
+          <h1 
+            className={`text-5xl sm:text-6xl md:text-7xl lg:text-[7rem] font-bold tracking-widest ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}
+            style={{
+               filter: theme === 'dark' ? 'drop-shadow(0 0 20px rgba(255,255,255,0.2))' : 'drop-shadow(0 0 20px rgba(0,0,0,0.1))',
+               fontFamily: "'Montserrat', sans-serif"
+            }}
+          >
+            {text || " "}
+          </h1>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 1.5 }}
+            className="mt-20 flex items-center justify-center"
+          >
+            <span 
+              className={`text-sm md:text-lg font-semibold tracking-[0.4em] uppercase text-[#ff0080]`}
+              style={{ filter: 'drop-shadow(0 0 10px rgba(255,0,128,0.4))' }}
+            >
+              Full Stack Developer
+            </span>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Scroll Down Indicator */}
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.5, duration: 1 }}
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center z-20 pointer-events-none"
+        >
+          <span className={`text-[0.6rem] tracking-[0.4em] uppercase mb-2 ${theme === 'light' ? 'text-gray-400' : 'text-gray-500'}`}>Scroll</span>
+          <motion.div
+            animate={{ y: [0, 8, 0], opacity: [0.3, 1, 0.3] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            className={`w-[2px] h-10 bg-gradient-to-b from-[#ff0080] to-transparent`}
+          />
+        </motion.div>
+      </AnimatePresence>
+    </section>
+  );
+};
+
+export default Intro;

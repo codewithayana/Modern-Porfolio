@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ShuffleText from './ShuffleText'
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { Download, Sun, Moon, Check, Menu, X } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 
@@ -9,13 +9,16 @@ const Navbar: React.FC = () => {
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  
+  const { scrollY } = useScroll();
 
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setScrolled(latest > 50);
+  });
+
+  // Ensure it checks on initial mount in case of page refresh
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    setScrolled(window.scrollY > 50);
   }, []);
 
   const navItems = ['About', 'Skills', 'Projects','Achievements','Education', 'Certifications', 'Contacts'];
