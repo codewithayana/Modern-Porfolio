@@ -6,6 +6,7 @@ import { useTheme } from '../hooks/useTheme';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(false);
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
@@ -14,11 +15,13 @@ const Navbar: React.FC = () => {
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 50);
+    setShowNavbar(latest > window.innerHeight * 0.5);
   });
 
   // Ensure it checks on initial mount in case of page refresh
   useEffect(() => {
     setScrolled(window.scrollY > 50);
+    setShowNavbar(window.scrollY > window.innerHeight * 0.5);
   }, []);
 
   const navItems = ['About', 'Skills', 'Projects','Achievements','Education', 'Certifications', 'Contacts'];
@@ -40,16 +43,22 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav 
-      className={`fixed top-0 left-0 w-full z-[100] transition-all duration-300 ${
-        scrolled || mobileMenuOpen
-          ? theme === 'light' 
-            ? 'py-4 bg-white/90 backdrop-blur-lg border-b border-gray-200' 
-            : 'py-4 bg-[#050110]/90 backdrop-blur-lg border-b border-white/10'
-          : 'py-6 bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+    <AnimatePresence>
+      {showNavbar && (
+        <motion.nav 
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+          exit={{ y: -100 }}
+          transition={{ duration: 0.3 }}
+          className={`fixed top-0 left-0 w-full z-[100] transition-colors duration-300 ${
+            scrolled || mobileMenuOpen
+              ? theme === 'light' 
+                ? 'py-4 bg-white/90 backdrop-blur-lg border-b border-gray-200' 
+                : 'py-4 bg-[#050110]/90 backdrop-blur-lg border-b border-white/10'
+              : 'py-6 bg-transparent'
+          }`}
+        >
+          <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
         {/* Logo */}
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
@@ -194,7 +203,9 @@ const Navbar: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+        </motion.nav>
+      )}
+    </AnimatePresence>
   );
 };
 

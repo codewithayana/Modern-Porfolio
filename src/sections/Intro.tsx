@@ -1,244 +1,292 @@
-import React, { useRef, useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Points, PointMaterial, Float, MeshDistortMaterial } from '@react-three/drei';
+import { Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../hooks/useTheme';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
-
-// --- 3D Components ---
-
-const StarField = ({ theme }: { theme: string }) => {
+// Subtle Starfield matching the image
+const SparseStars = () => {
   const ref = useRef<THREE.Points>(null!);
-  
   const [positions] = useMemo(() => {
-    const count = 4000;
-    const positions = new Float32Array(count * 3);
+    const count = 200;
+    const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const r = 10 + Math.random() * 40;
-      const theta = 2 * Math.PI * Math.random();
-      const phi = Math.acos(2 * Math.random() - 1);
-      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      positions[i * 3 + 2] = r * Math.cos(phi);
+      pos[i * 3] = (Math.random() - 0.5) * 20;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 20;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 20;
     }
-    return [positions];
+    return [pos];
   }, []);
-
-  useFrame(() => {
+  
+  useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.x -= 0.0003;
-      ref.current.rotation.y -= 0.0005;
+      ref.current.rotation.y = state.clock.getElapsedTime() * 0.02;
     }
   });
 
-  const color = theme === 'light' ? '#ff8c00' : '#ff0080';
-
   return (
-    <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
-      <PointMaterial
-        transparent
-        color={color}
-        size={0.06}
-        sizeAttenuation={true}
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
+    <Points ref={ref} positions={positions} stride={3}>
+      <PointMaterial 
+        transparent 
+        color="#ffffff" 
+        size={0.03} 
+        sizeAttenuation={true} 
+        depthWrite={false} 
+        opacity={0.6} 
       />
     </Points>
   );
 };
 
-const FloatingOrb = ({ theme }: { theme: string }) => {
-  const orbRef = useRef<THREE.Mesh>(null!);
-  const glowColor = theme === 'light' ? '#00bfff' : '#00f0ff';
-  const ring1Color = theme === 'light' ? '#0088ff' : '#00bfff';
-  const ring2Color = theme === 'light' ? '#00f0ff' : '#ffffff';
-  const envColor = theme === 'light' ? '#f0f0f0' : '#0a0a1a';
-
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    if (orbRef.current) {
-      orbRef.current.rotation.y = Math.sin(t / 4) * 0.5;
-      orbRef.current.rotation.z = Math.sin(t / 4) * 0.5;
-    }
-  });
-
+// Neon Flicker Reveal - Highly responsive, won't cut off wrapped text
+const NeonFlickerReveal = ({ text, startAnimation }: { text: string, startAnimation: boolean }) => {
   return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={1.5} position={[0, 0, -2]}>
-      {/* Core Orb */}
-      <mesh ref={orbRef} scale={1.2}>
-        <icosahedronGeometry args={[1, 15]} />
-        <MeshDistortMaterial 
-          color={envColor} 
-          emissive={glowColor}
-          emissiveIntensity={0.8}
-          clearcoat={1} 
-          clearcoatRoughness={0.1}
-          metalness={0.8}
-          roughness={0.2}
-          wireframe={theme === 'dark'}
-          distort={0.4} 
-          speed={2.5} 
-        />
-      </mesh>
+    <div className="relative group flex justify-center items-center py-4 w-full min-h-[120px] px-4">
       
-      {/* Outer Rotating Rings */}
-      <Float speed={1.5} rotationIntensity={2} floatIntensity={0.5}>
-        <mesh rotation-x={Math.PI / 2} scale={1.2}>
-          <torusGeometry args={[3.2, 0.015, 16, 100]} />
-          <meshBasicMaterial color={ring1Color} wireframe opacity={0.4} transparent />
-        </mesh>
-      </Float>
-      <Float speed={2.5} rotationIntensity={3} floatIntensity={0}>
-        <mesh rotation-y={Math.PI / 3} rotation-x={Math.PI / 4} scale={1.4}>
-          <torusGeometry args={[2.8, 0.01, 16, 100]} />
-          <meshBasicMaterial color={ring2Color} wireframe opacity={0.3} transparent />
-        </mesh>
-      </Float>
-    </Float>
+      {/* Main Glitch Text */}
+      <motion.h1 
+        initial={{ opacity: 0, filter: "brightness(0) blur(10px)", scale: 0.95 }}
+        animate={startAnimation ? { 
+          opacity: [0, 1, 0, 1, 0.6, 1], 
+          filter: ["brightness(0) blur(10px)", "brightness(2) blur(0px)", "brightness(0) blur(4px)", "brightness(2) blur(0px)", "brightness(1) blur(2px)", "brightness(1) blur(0px)"],
+          scale: 1
+        } : {}}
+        transition={{ duration: 0.8, ease: "linear", delay: 0.2 }}
+        className="glitch-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-[0.1em] sm:tracking-[0.2em] uppercase text-white drop-shadow-lg text-center"
+        style={{ fontFamily: "'Montserrat', sans-serif", wordBreak: "keep-all" }}
+        data-text={text}
+      >
+        <span className="relative z-10 block">{text}</span>
+      </motion.h1>
+      
+      {/* Background ambient glow that pulses */}
+      <motion.h1
+         initial={{ opacity: 0 }}
+         animate={startAnimation ? { opacity: [0, 0.4, 0.15] } : {}}
+         transition={{ duration: 3, delay: 1, repeat: Infinity, repeatType: "mirror" }}
+         className="absolute text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-[0.1em] sm:tracking-[0.2em] uppercase text-[#ff0080] text-center"
+         style={{ fontFamily: "'Montserrat', sans-serif", filter: "blur(20px)", zIndex: -1, wordBreak: "keep-all" }}
+      >
+        {text}
+      </motion.h1>
+
+      <style>{`
+        .glitch-text {
+          position: relative;
+        }
+        
+        /* Cyan Glitch */
+        .glitch-text::before {
+          content: attr(data-text);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          color: #00f0ff;
+          z-index: -1;
+          overflow: hidden;
+          clip-path: inset(0 0 0 0);
+          animation: ${startAnimation ? 'glitch-anim-1 3s infinite linear alternate-reverse' : 'none'};
+          opacity: 0.9;
+          margin-left: -3px;
+        }
+        
+        /* Magenta Glitch */
+        .glitch-text::after {
+          content: attr(data-text);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          color: #ff0080;
+          z-index: -2;
+          overflow: hidden;
+          clip-path: inset(0 0 0 0);
+          animation: ${startAnimation ? 'glitch-anim-2 2.5s infinite linear alternate-reverse' : 'none'};
+          opacity: 0.9;
+          margin-left: 3px;
+        }
+        
+        @keyframes glitch-anim-1 {
+          0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
+          10% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+          20% { clip-path: inset(40% 0 50% 0); transform: translate(2px, 1px); }
+          30% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, -1px); }
+          40% { clip-path: inset(10% 0 70% 0); transform: translate(2px, -1px); }
+          50% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 1px); }
+          60% { clip-path: inset(70% 0 20% 0); transform: translate(2px, 1px); }
+          70% { clip-path: inset(50% 0 30% 0); transform: translate(-2px, -1px); }
+          80% { clip-path: inset(15% 0 80% 0); transform: translate(2px, 1px); }
+          90% { clip-path: inset(85% 0 10% 0); transform: translate(-2px, -1px); }
+          100% { clip-path: inset(35% 0 45% 0); transform: translate(2px, 1px); }
+        }
+        
+        @keyframes glitch-anim-2 {
+          0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -1px); }
+          10% { clip-path: inset(30% 0 20% 0); transform: translate(-2px, 1px); }
+          20% { clip-path: inset(80% 0 5% 0); transform: translate(2px, 1px); }
+          30% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, -1px); }
+          40% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+          50% { clip-path: inset(15% 0 80% 0); transform: translate(-2px, 1px); }
+          60% { clip-path: inset(75% 0 15% 0); transform: translate(2px, 1px); }
+          70% { clip-path: inset(25% 0 45% 0); transform: translate(-2px, -1px); }
+          80% { clip-path: inset(55% 0 35% 0); transform: translate(2px, 1px); }
+          90% { clip-path: inset(90% 0 5% 0); transform: translate(-2px, -1px); }
+          100% { clip-path: inset(5% 0 85% 0); transform: translate(2px, 1px); }
+        }
+      `}</style>
+    </div>
   );
 };
 
-const CameraController = () => {
-  useFrame((state) => {
-    const { pointer, camera } = state;
-    // Smooth camera movement based on mouse
-    const targetX = (pointer.x * 1.5);
-    const targetY = (pointer.y * 1.5);
-    camera.position.x += (targetX - camera.position.x) * 0.05;
-    camera.position.y += (targetY - camera.position.y) * 0.05;
-    camera.lookAt(0, 0, 0);
-  });
-  return null;
-};
+const PreIntro = ({ onExplore, theme }: { onExplore: () => void, theme: string }) => {
+  const [bootText, setBootText] = useState("");
+  const [showButton, setShowButton] = useState(false);
+  const fullText = ">_ INITIALIZING NEURAL LINK...";
 
-// --- Main Intro Component ---
-
-const Intro: React.FC = () => {
-  const { theme } = useTheme();
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
-
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.6], [1, 0.85]);
-  const y = useTransform(scrollYProgress, [0, 0.6], [0, 150]);
-
-  // Decode Text Animation
-  const [text, setText] = useState("");
-  const finalString = "AYANA DINESH";
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
-  
   useEffect(() => {
-    let iteration = 0;
-    let interval: NodeJS.Timeout;
-    
-    const timeout = setTimeout(() => {
-      interval = setInterval(() => {
-        setText((prev) => 
-          finalString.split("").map((letter, index) => {
-            if (index < iteration) {
-              return finalString[index];
-            }
-            return letters[Math.floor(Math.random() * letters.length)];
-          }).join("")
-        );
-        
-        if (iteration >= finalString.length) {
-          clearInterval(interval);
-        }
-        
-        iteration += 1 / 3;
-      }, 40);
-    }, 400);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
+    let index = 0;
+    const interval = setInterval(() => {
+      setBootText(fullText.slice(0, index));
+      index++;
+      if (index > fullText.length) {
+        clearInterval(interval);
+        setTimeout(() => setShowButton(true), 500);
+      }
+    }, 50);
+    return () => clearInterval(interval);
   }, []);
 
-  return (
-    <section 
-      ref={containerRef}
-      className={`relative w-full h-screen overflow-hidden ${theme === 'light' ? 'bg-[#f8f9fa]' : 'bg-[#020005]'}`}
-      style={{ userSelect: 'none' }}
+  return createPortal(
+    <div 
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center font-mono transition-opacity duration-1000 ${theme === 'light' ? 'bg-[#f8f9fa] text-gray-900' : 'bg-[#020005] text-[#00f0ff]'}`}
     >
-      {/* 3D Background */}
-      <div className="absolute inset-0 z-0 cursor-crosshair">
-        <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-          <ambientLight intensity={theme === 'light' ? 1.5 : 0.5} />
-          <directionalLight position={[10, 10, 5]} intensity={1.2} />
-          <StarField theme={theme} />
-          <FloatingOrb theme={theme} />
-          <CameraController />
+      <div className="flex flex-col items-center">
+        <div className="h-10 mb-8 flex items-center justify-center">
+          <span className="text-lg md:text-2xl tracking-[0.2em] font-bold">
+            {bootText}
+            <motion.span 
+              animate={{ opacity: [1, 0] }} 
+              transition={{ repeat: Infinity, duration: 0.8 }}
+            >
+              _
+            </motion.span>
+          </span>
+        </div>
+
+        {showButton && (
+          <button
+            onClick={onExplore}
+            className={`relative overflow-hidden px-10 py-4 font-bold tracking-[0.4em] uppercase text-sm group border transition-all duration-300 hover:scale-105 active:scale-95 ${theme === 'light' ? 'text-gray-900 border-gray-900 hover:bg-gray-900 hover:text-white' : 'text-[#ff0080] border-[#ff0080] hover:bg-[#ff0080] hover:text-white'}`}
+          >
+            EXPLORE
+          </button>
+        )}
+      </div>
+    </div>,
+    document.body
+  );
+};
+
+const MainIntro: React.FC<{ startAnimation: boolean }> = ({ startAnimation }) => {
+  // startAnimation is passed as a prop, no local state needed for it
+
+  return (
+    <section className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#8a1c7c] via-[#290a3a] to-[#0d0614] selection:bg-pink-500/30">
+      
+      {/* Deep Space Background Canvas */}
+      <div className="absolute inset-0 z-0">
+        <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
+          <SparseStars />
         </Canvas>
       </div>
-
-      <style>
-        {`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');`}
-      </style>
-
-      {/* Vignette Overlay */}
-      <div className={`absolute inset-0 z-[1] pointer-events-none transition-colors duration-700 ${theme === 'light' ? 'bg-[radial-gradient(circle_at_center,transparent_0%,rgba(248,249,250,0.7)_100%)]' : 'bg-[radial-gradient(circle_at_center,transparent_0%,rgba(2,0,5,0.8)_100%)]'}`} />
-
-      {/* Foreground Content */}
-      <motion.div 
-        style={{ opacity, scale, y }}
-        className="relative z-10 w-full h-full flex flex-col items-center justify-center pointer-events-none"
-      >
-        <div className="flex flex-col items-center text-center mt-10">
-          
-
-          <h1 
-            className={`text-5xl sm:text-6xl md:text-7xl lg:text-[7rem] font-bold tracking-widest ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}
-            style={{
-               filter: theme === 'dark' ? 'drop-shadow(0 0 20px rgba(255,255,255,0.2))' : 'drop-shadow(0 0 20px rgba(0,0,0,0.1))',
-               fontFamily: "'Montserrat', sans-serif"
-            }}
-          >
-            {text || " "}
-          </h1>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 1.5 }}
-            className="mt-20 flex items-center justify-center"
-          >
-            <span 
-              className={`text-sm md:text-lg font-semibold tracking-[0.4em] uppercase text-[#ff0080]`}
-              style={{ filter: 'drop-shadow(0 0 10px rgba(255,0,128,0.4))' }}
-            >
-              Full Stack Developer
-            </span>
-          </motion.div>
-        </div>
-      </motion.div>
-
-      {/* Scroll Down Indicator */}
-      <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2.5, duration: 1 }}
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center z-20 pointer-events-none"
+      
+      {/* Light Rays / Flares matching the image */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-20%] left-[-10%] w-[150%] h-[150%] rotate-[-15deg] opacity-20 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.15)_0%,_transparent_50%)]" />
+        <div className="absolute top-[10%] left-[-20%] w-[200%] h-[20%] rotate-[-25deg] bg-gradient-to-r from-transparent via-[#ff6bdf] to-transparent opacity-[0.07] blur-2xl" />
+        <div className="absolute top-[30%] left-[-20%] w-[200%] h-[10%] rotate-[-25deg] bg-gradient-to-r from-transparent via-[#ff6bdf] to-transparent opacity-[0.03] blur-xl" />
+      </div>
+      
+      {/* Main Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center text-center mt-12">
+        
+        
+        
+        {/* Name with Dynamic Neon Flicker Reveal */}
+        <NeonFlickerReveal text="AYANA DINESH" startAnimation={startAnimation} />
+        
+        {/* Subtitle with Blinking Cursor */}
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          transition={{ duration: 1, delay: 0.8 }}
+          className="flex items-center gap-2 mt-2 mb-12"
         >
-          <span className={`text-[0.6rem] tracking-[0.4em] uppercase mb-2 ${theme === 'light' ? 'text-gray-400' : 'text-gray-500'}`}>Scroll</span>
-          <motion.div
-            animate={{ y: [0, 8, 0], opacity: [0.3, 1, 0.3] }}
-            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            className={`w-[2px] h-10 bg-gradient-to-b from-[#ff0080] to-transparent`}
+          <span className="text-base sm:text-lg md:text-xl font-mono text-pink-100 font-semibold tracking-wide">
+            Full Stack Developer
+          </span>
+          <motion.span 
+            animate={{ opacity: [1, 0] }} 
+            transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+            className="w-2.5 h-5 bg-[#ff4da6] block" 
           />
         </motion.div>
-      </AnimatePresence>
+        
+        
+      </div>
+      
+      {/* Scroll Down Indicator */}
+      <motion.a 
+        href="#about"
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ duration: 1, delay: 1.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer opacity-60 hover:opacity-100 transition-opacity z-20"
+      >
+        <span className="text-[0.6rem] tracking-[0.5em] uppercase text-pink-200 font-semibold">Scroll</span>
+        <ChevronDown className="w-3 h-3 text-pink-200" />
+      </motion.a>
+
     </section>
+  );
+};
+
+const Intro: React.FC = () => {
+  const [hasExplored, setHasExplored] = useState(false);
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    if (!hasExplored) {
+      document.body.style.overflow = 'hidden';
+      // @ts-ignore
+      if (window.lenis) window.lenis.stop();
+      window.scrollTo(0, 0);
+    } else {
+      document.body.style.overflow = '';
+      // @ts-ignore
+      if (window.lenis) window.lenis.start();
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+      // @ts-ignore
+      if (window.lenis) window.lenis.start();
+    };
+  }, [hasExplored]);
+
+  return (
+    <>
+      {!hasExplored && (
+        <PreIntro onExplore={() => setHasExplored(true)} theme={theme} />
+      )}
+      <MainIntro startAnimation={hasExplored} />
+    </>
   );
 };
 
