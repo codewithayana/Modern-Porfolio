@@ -52,7 +52,7 @@ export const socialLinks: SocialLinkItem[] = [
     iconKey: 'whatsapp',
   },
   {
-    href: 'mailto:ayanakd.official@gmail.com',
+    href: 'https://outlook.live.com/mail/0/deeplink/compose?to=ayanakd.official@gmail.com',
     label: 'Gmail',
     iconKey: 'gmail',
   },

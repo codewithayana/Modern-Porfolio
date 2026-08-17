@@ -15,13 +15,28 @@ const Navbar: React.FC = () => {
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 50);
-    setShowNavbar(latest > window.innerHeight * 0.5);
+    
+    // Precisely check if the About section is entering the viewport
+    const aboutSection = document.getElementById('about') || document.getElementById('nav-about');
+    if (aboutSection) {
+      const rect = aboutSection.getBoundingClientRect();
+      // Show the navbar when the About section comes within 800px of the top of the screen
+      // (This guarantees it appears as you are scrolling towards it, before it even fully arrives)
+      setShowNavbar(rect.top <= 800);
+    } else {
+      // Fallback
+      setShowNavbar(latest > 300);
+    }
   });
 
-  // Ensure it checks on initial mount in case of page refresh
   useEffect(() => {
     setScrolled(window.scrollY > 50);
-    setShowNavbar(window.scrollY > window.innerHeight * 0.5);
+    const aboutSection = document.getElementById('about') || document.getElementById('nav-about');
+    if (aboutSection) {
+      setShowNavbar(aboutSection.getBoundingClientRect().top <= 800);
+    } else {
+      setShowNavbar(window.scrollY > 300);
+    }
   }, []);
 
   const navItems = ['About', 'Skills', 'Projects','Achievements','Education', 'Certifications', 'Contacts'];

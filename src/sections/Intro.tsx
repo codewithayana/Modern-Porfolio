@@ -8,10 +8,10 @@ import * as THREE from 'three';
 import { useTheme } from '../hooks/useTheme';
 
 // Subtle Starfield matching the image
-const SparseStars = () => {
+const SparseStars = ({ theme }: { theme: string }) => {
   const ref = useRef<THREE.Points>(null!);
   const [positions] = useMemo(() => {
-    const count = 200;
+    const count = 1200;
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 20;
@@ -31,7 +31,7 @@ const SparseStars = () => {
     <Points ref={ref} positions={positions} stride={3}>
       <PointMaterial 
         transparent 
-        color="#ffffff" 
+        color={theme === 'light' ? "#000000" : "#ffffff"} 
         size={0.03} 
         sizeAttenuation={true} 
         depthWrite={false} 
@@ -42,7 +42,7 @@ const SparseStars = () => {
 };
 
 // Neon Flicker Reveal - Highly responsive, won't cut off wrapped text
-const NeonFlickerReveal = ({ text, startAnimation }: { text: string, startAnimation: boolean }) => {
+const NeonFlickerReveal = ({ text, startAnimation, theme }: { text: string, startAnimation: boolean, theme: string }) => {
   return (
     <div className="relative group flex justify-center items-center py-4 w-full min-h-[120px] px-4">
       
@@ -55,7 +55,7 @@ const NeonFlickerReveal = ({ text, startAnimation }: { text: string, startAnimat
           scale: 1
         } : {}}
         transition={{ duration: 0.8, ease: "linear", delay: 0.2 }}
-        className="glitch-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-[0.1em] sm:tracking-[0.2em] uppercase text-white drop-shadow-lg text-center"
+        className={`glitch-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-[0.1em] sm:tracking-[0.2em] uppercase ${theme === 'light' ? 'text-gray-900' : 'text-white'} drop-shadow-lg text-center`}
         style={{ fontFamily: "'Montserrat', sans-serif", wordBreak: "keep-all" }}
         data-text={text}
       >
@@ -145,64 +145,151 @@ const NeonFlickerReveal = ({ text, startAnimation }: { text: string, startAnimat
 };
 
 const PreIntro = ({ onExplore, theme }: { onExplore: () => void, theme: string }) => {
-  const [bootText, setBootText] = useState("");
+  const [visibleText, setVisibleText] = useState<string[]>(["", "", ""]);
   const [showButton, setShowButton] = useState(false);
-  const fullText = ">_ INITIALIZING NEURAL LINK...";
+  const [activeLine, setActiveLine] = useState(0);
+
+  const lines = [
+    "> DECRYPTING PORTFOLIO...",
+    "> ROOT ACCESS ENABLED_",
+    "sudo explore --portfolio"
+  ];
 
   useEffect(() => {
-    let index = 0;
+    let currentLine = 0;
+    let currentChar = 0;
+    let isPaused = false;
+
     const interval = setInterval(() => {
-      setBootText(fullText.slice(0, index));
-      index++;
-      if (index > fullText.length) {
+      if (isPaused) return;
+
+      if (currentLine >= lines.length) {
         clearInterval(interval);
         setTimeout(() => setShowButton(true), 500);
+        return;
       }
-    }, 50);
+
+      setVisibleText(prev => {
+        const newText = [...prev];
+        newText[currentLine] = lines[currentLine].slice(0, currentChar + 1);
+        return newText;
+      });
+
+      currentChar++;
+      
+      if (currentChar >= lines[currentLine].length) {
+        isPaused = true;
+        setTimeout(() => {
+          isPaused = false;
+          currentLine++;
+          currentChar = 0;
+          setActiveLine(currentLine);
+        }, 600); // delay between lines
+      }
+    }, 40); // typing speed
+
     return () => clearInterval(interval);
   }, []);
 
   return createPortal(
     <div 
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center font-mono transition-opacity duration-1000 ${theme === 'light' ? 'bg-[#f8f9fa] text-gray-900' : 'bg-[#020005] text-[#00f0ff]'}`}
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center font-mono transition-opacity duration-1000 ${theme === 'light' ? 'bg-[#f8f9fa] text-gray-900' : 'bg-[#020005] text-[#00ffa3]'}`}
     >
-      <div className="flex flex-col items-center">
-        <div className="h-10 mb-8 flex items-center justify-center">
-          <span className="text-lg md:text-2xl tracking-[0.2em] font-bold">
-            {bootText}
-            <motion.span 
-              animate={{ opacity: [1, 0] }} 
-              transition={{ repeat: Infinity, duration: 0.8 }}
-            >
-              _
-            </motion.span>
-          </span>
+      {/* CRT Scanline Overlay */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04] mix-blend-overlay z-0" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0) 50%, rgba(0,0,0,1) 50%)', backgroundSize: '100% 4px' }} />
+      
+      {/* Cinematic Vignette */}
+      <div className={`absolute inset-0 pointer-events-none z-0 ${theme === 'light' ? 'bg-[radial-gradient(circle_at_center,transparent_50%,rgba(0,0,0,0.05)_100%)]' : 'bg-[radial-gradient(circle_at_center,transparent_10%,rgba(0,0,0,0.85)_100%)]'}`} />
+      
+      {/* Decorative Technical Labels */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.4 }}
+        transition={{ delay: 1 }}
+        className={`absolute top-6 left-6 md:top-10 md:left-10 text-[10px] md:text-xs tracking-[0.3em] font-bold ${theme === 'light' ? 'text-gray-500' : 'text-[#00ffa3]'}`}
+      >
+        SYS.VER_2.4.1
+      </motion.div>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.4 }}
+        transition={{ delay: 1.5 }}
+        className={`absolute bottom-6 right-6 md:bottom-10 md:right-10 text-[10px] md:text-xs tracking-[0.3em] font-bold ${theme === 'light' ? 'text-gray-500' : 'text-[#00ffa3]'}`}
+      >
+        SECURE_CONNECTION
+      </motion.div>
+
+      <div className="relative z-10 flex flex-col items-start w-[85%] max-w-[500px]">
+        {/* Terminal Text Lines */}
+        <div className="flex flex-col items-start justify-center gap-4 mb-8">
+          {lines.map((_, idx) => (
+            <div key={idx} className="h-6 md:h-8 flex items-center">
+              <span 
+                className="text-sm md:text-xl tracking-[0.1em] md:tracking-[0.15em] font-bold transition-all duration-300"
+                style={{ textShadow: theme === 'light' ? 'none' : '0 0 10px rgba(0,255,163,0.4)' }}
+              >
+                {visibleText[idx]}
+                {activeLine === idx && !showButton && (
+                  <motion.span 
+                    animate={{ opacity: [1, 0] }} 
+                    transition={{ repeat: Infinity, duration: 0.8 }}
+                  >
+                    _
+                  </motion.span>
+                )}
+              </span>
+            </div>
+          ))}
         </div>
 
-        {showButton && (
-          <button
-            onClick={onExplore}
-            className={`relative overflow-hidden px-10 py-4 font-bold tracking-[0.4em] uppercase text-sm group border transition-all duration-300 hover:scale-105 active:scale-95 ${theme === 'light' ? 'text-gray-900 border-gray-900 hover:bg-gray-900 hover:text-white' : 'text-[#ff0080] border-[#ff0080] hover:bg-[#ff0080] hover:text-white'}`}
-          >
-            EXPLORE
-          </button>
-        )}
+        {/* Explore Button */}
+        <div className="w-full flex justify-start mt-2 h-16">
+          {showButton && (
+            <motion.button
+              onClick={onExplore}
+              initial={{ opacity: 0, y: 15, filter: 'blur(5px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`relative px-10 py-4 font-bold tracking-[0.4em] uppercase text-sm group overflow-hidden border-2 transition-all duration-300 ${
+                theme === 'light' 
+                  ? 'bg-gray-900 text-white border-gray-900 shadow-xl hover:shadow-[0_0_30px_rgba(0,255,163,0.4)] hover:border-transparent' 
+                  : 'bg-[#020005] text-[#00ffa3] border-[#00ffa3] shadow-[0_0_15px_rgba(0,255,163,0.3)] hover:shadow-[0_0_30px_rgba(0,255,163,0.7)] hover:border-transparent'
+              }`}
+            >
+              {/* Fill background on hover */}
+              <div className={`absolute inset-0 w-full h-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out z-0 ${
+                theme === 'light' ? 'bg-[#00ffa3]' : 'bg-[#00ffa3]'
+              }`} />
+              
+              <span className={`relative z-10 flex items-center gap-3 transition-colors duration-300 group-hover:text-black`}>
+                <span className="text-[#00ffa3] group-hover:text-black transition-colors duration-300">{`//`}</span>
+                EXPLORE
+                <span className="text-[#00ffa3] group-hover:text-black transition-colors duration-300">{`_`}</span>
+              </span>
+              
+              {/* Cyberpunk corner accents */}
+              <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+            </motion.button>
+          )}
+        </div>
       </div>
     </div>,
     document.body
   );
 };
 
-const MainIntro: React.FC<{ startAnimation: boolean }> = ({ startAnimation }) => {
+const MainIntro: React.FC<{ startAnimation: boolean, theme: string }> = ({ startAnimation, theme }) => {
   // startAnimation is passed as a prop, no local state needed for it
 
   return (
-    <section className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#8a1c7c] via-[#290a3a] to-[#0d0614] selection:bg-pink-500/30">
+    <section className={`relative w-full h-screen flex flex-col items-center justify-center overflow-hidden transition-colors duration-1000 ${theme === 'light' ? 'bg-[#f8f9fa]' : 'bg-[#020005]'} selection:bg-pink-500/30`}>
       
       {/* Deep Space Background Canvas */}
       <div className="absolute inset-0 z-0">
         <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
-          <SparseStars />
+          <SparseStars theme={theme} />
         </Canvas>
       </div>
       
@@ -219,7 +306,7 @@ const MainIntro: React.FC<{ startAnimation: boolean }> = ({ startAnimation }) =>
         
         
         {/* Name with Dynamic Neon Flicker Reveal */}
-        <NeonFlickerReveal text="AYANA DINESH" startAnimation={startAnimation} />
+        <NeonFlickerReveal text="AYANA DINESH" startAnimation={startAnimation} theme={theme} />
         
         {/* Subtitle with Blinking Cursor */}
         <motion.div 
@@ -228,7 +315,7 @@ const MainIntro: React.FC<{ startAnimation: boolean }> = ({ startAnimation }) =>
           transition={{ duration: 1, delay: 0.8 }}
           className="flex items-center gap-2 mt-2 mb-12"
         >
-          <span className="text-base sm:text-lg md:text-xl font-mono text-pink-100 font-semibold tracking-wide">
+          <span className={`text-base sm:text-lg md:text-xl font-mono ${theme === 'light' ? 'text-gray-700' : 'text-pink-100'} font-semibold tracking-wide`}>
             Full Stack Developer
           </span>
           <motion.span 
@@ -247,10 +334,10 @@ const MainIntro: React.FC<{ startAnimation: boolean }> = ({ startAnimation }) =>
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }} 
         transition={{ duration: 1, delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer opacity-60 hover:opacity-100 transition-opacity z-20"
+        className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer opacity-60 hover:opacity-100 transition-opacity z-20 ${theme === 'light' ? 'text-gray-600' : 'text-pink-200'}`}
       >
-        <span className="text-[0.6rem] tracking-[0.5em] uppercase text-pink-200 font-semibold">Scroll</span>
-        <ChevronDown className="w-3 h-3 text-pink-200" />
+        <span className="text-[0.6rem] tracking-[0.5em] uppercase font-semibold">Scroll</span>
+        <ChevronDown className="w-3 h-3" />
       </motion.a>
 
     </section>
@@ -285,7 +372,7 @@ const Intro: React.FC = () => {
       {!hasExplored && (
         <PreIntro onExplore={() => setHasExplored(true)} theme={theme} />
       )}
-      <MainIntro startAnimation={hasExplored} />
+      <MainIntro startAnimation={hasExplored} theme={theme} />
     </>
   );
 };

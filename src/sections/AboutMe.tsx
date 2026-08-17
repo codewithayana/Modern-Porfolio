@@ -30,7 +30,7 @@ const planets = [
   },
   {
     name: "Email",
-    link: "mailto:ayanakd.official@gmail.com",
+    link: "https://outlook.live.com/mail/0/deeplink/compose?to=ayanakd.official@gmail.com",
     color: "#EA4335",
     icon: SiGmail,
   },

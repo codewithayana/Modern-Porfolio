@@ -31,7 +31,7 @@ const Footer: React.FC = () => {
   const socialLinks = [
     { name: 'GitHub', icon: <FaGithub size={20} />, url: 'https://github.com/codewithayana' },
     { name: 'LinkedIn', icon: <FaLinkedin size={20} />, url: 'https://linkedin.com/in/ayanadinesh' },
-    { name: 'Email', icon: <FaEnvelope size={20} />, url: 'mailto:ayanakd.official@gmail.com' }
+    { name: 'Email', icon: <FaEnvelope size={20} />, url: 'https://outlook.live.com/mail/0/deeplink/compose?to=ayanakd.official@gmail.com' }
   ];
 
   return (
@@ -58,7 +58,8 @@ const Footer: React.FC = () => {
               Open to freelance work and full-time roles.
             </p>
             <a 
-              href="mailto:ayanakd.official@gmail.com"
+              href="https://outlook.live.com/mail/0/deeplink/compose?to=ayanakd.official@gmail.com"
+              target="_blank" rel="noreferrer"
               className={`mt-4 w-fit flex items-center gap-2 px-6 py-3 rounded-xl border text-sm font-semibold transition-all hover:scale-105 ${
                 theme === 'light' 
                   ? 'border-gray-300 hover:bg-gray-100 text-gray-800' 

@@ -143,7 +143,7 @@ const TerminalContact: React.FC = () => {
                   <span className="output-arrow green">▶</span>
                   <span className="output-label">email</span>
                   <span className="output-value">
-                    <a href="mailto:ayanakd.official@gmail.com">ayanakd.official@gmail.com</a>
+                    <a href="https://outlook.live.com/mail/0/deeplink/compose?to=ayanakd.official@gmail.com" target="_blank" rel="noreferrer">ayanakd.official@gmail.com</a>
                   </span>
                 </div>
               )}
