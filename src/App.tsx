@@ -1,5 +1,4 @@
 import { motion, useScroll, useSpring } from 'framer-motion'
-import Navbar from './components/Navbar'
 import Intro from './sections/Intro'
 import AboutMe from './sections/AboutMe'
 import TechUniverse from './sections/TechUniverse'
@@ -32,7 +31,6 @@ const App = () => {
       <div className="fixed inset-0 bg-bg-primary transition-colors duration-300 z-[-1]" />
       
       <main className="relative min-h-screen text-text-primary" style={{ perspective: '800px' }}>
-         <Navbar />
          <Intro />
          <div id="nav-about"><div className="reveal"><AboutMe /></div></div>
          <div id="nav-skills"><div className="reveal"><TechUniverse /></div></div>

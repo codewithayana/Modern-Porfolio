@@ -139,8 +139,12 @@ const Projects: React.FC = () => {
                       left: '25%',
                     }}
                   ></div>
-                  <span className="thumb-emoji">{project.emoji || '🚀'}</span>
-                  {project.isFeatured && <div className="featured-badge">★ Featured</div>}
+                  {project.image ? (
+                    <img src={project.image} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1, opacity: 0.8 }} />
+                  ) : (
+                    <span className="thumb-emoji">{project.emoji || '🚀'}</span>
+                  )}
+                  
                   {!project.isFeatured && <div className="card-num">{String(idx + 1).padStart(2, '0')}</div>}
                   <span className={`cat-tag tag-${project.category === 'fullstack' ? 'fs' : project.category === 'frontend' ? 'fe' : 'be'}`}>
                     {project.category === 'fullstack' ? 'Full Stack' : project.category === 'frontend' ? 'Frontend' : 'Backend'}

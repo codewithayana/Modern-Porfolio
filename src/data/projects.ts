@@ -61,7 +61,7 @@ export const projects: ProjectItem[] = [
     title: 'my-portfolio-next.js',
     description:
       'This is a modern developer portfolio. Designed with a clean UI/UX, smooth animations, and dynamic content. it is fully responsive and optimized for performance.',
-    image: '/assets/img/modern portfolio.png',
+    image: '/portfolio.png',
     link: 'https://my-portfolio-next-js-ivory-sigma.vercel.app/',
     github: 'https://github.com/codewithayana/my-portfolio-next.js',
     techStack: [
@@ -79,7 +79,7 @@ export const projects: ProjectItem[] = [
     title: 'Node-Mongoose-JWT-APIs-TS',
     description:
       'Production-grade REST API built with Node.js, TypeScript, Express, MongoDB, Redis and Docker. Includes Jest, Supertest, test Coverage and Docker Compose.',
-    image: '/assets/img/Backend API.png',
+    image: '',
     link: '',
     github: 'https://github.com/codewithayana/node_rest-api-ts',
     techStack: [
@@ -97,7 +97,7 @@ export const projects: ProjectItem[] = [
     title: 'Lumina-Skin-ecommerce',
     description:
       'Lumina Skin is a modern e-commerce platform built with Node.js, Express, Handlebars, Bootstrap, and JavaScript, featuring JWT-based authentication with separate Admin and User panels for secure access and management.',
-    image: '/assets/img/Lumina skin.png',
+    image: '/Lumina Skin.png',
     link: 'https://lumina-skin.onrender.com/',
     github: 'https://github.com/codewithayana/Lumina-Skin-ecommerce',
     techStack: [

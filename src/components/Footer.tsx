@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FaGithub, FaLinkedin, FaXTwitter, FaEnvelope } from 'react-icons/fa6';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Download } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 
 const Footer: React.FC = () => {
@@ -57,17 +57,30 @@ const Footer: React.FC = () => {
             <p className={`text-[15px] leading-relaxed ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
               Open to freelance work and full-time roles.
             </p>
-            <a 
-              href="https://outlook.live.com/mail/0/deeplink/compose?to=ayanakd.official@gmail.com"
-              target="_blank" rel="noreferrer"
-              className={`mt-4 w-fit flex items-center gap-2 px-6 py-3 rounded-xl border text-sm font-semibold transition-all hover:scale-105 ${
-                theme === 'light' 
-                  ? 'border-gray-300 hover:bg-gray-100 text-gray-800' 
-                  : 'border-[#333] hover:bg-white/5 text-gray-200'
-              }`}
-            >
-              Say hello <ArrowRight size={16} />
-            </a>
+            <div className="mt-4 flex flex-wrap items-center gap-4">
+              <a 
+                href="https://outlook.live.com/mail/0/deeplink/compose?to=ayanakd.official@gmail.com"
+                target="_blank" rel="noreferrer"
+                className={`w-fit flex items-center gap-2 px-6 py-3 rounded-xl border text-sm font-semibold transition-all hover:scale-105 ${
+                  theme === 'light' 
+                    ? 'border-gray-300 hover:bg-gray-100 text-gray-800' 
+                    : 'border-[#333] hover:bg-white/5 text-gray-200'
+                }`}
+              >
+                Say hello <ArrowRight size={16} />
+              </a>
+              <a 
+                href="/Ayana Full Stack.pdf"
+                download="Ayana_Dinesh_CV.pdf"
+                className={`w-fit flex items-center gap-2 px-6 py-3 rounded-xl border text-sm font-semibold transition-all hover:scale-105 ${
+                  theme === 'light' 
+                    ? 'bg-gray-900 text-white border-transparent hover:bg-gray-800' 
+                    : 'bg-white text-black border-transparent hover:bg-gray-200'
+                }`}
+              >
+                Download CV <Download size={16} />
+              </a>
+            </div>
           </div>
 
           {/* Right Social Icons */}
