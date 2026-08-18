@@ -62,7 +62,7 @@ export const projects: ProjectItem[] = [
     description:
       'This is a modern developer portfolio. Designed with a clean UI/UX, smooth animations, and dynamic content. it is fully responsive and optimized for performance.',
     image: '/portfolio.png',
-    link: 'https://my-portfolio-next-js-ivory-sigma.vercel.app/',
+    link: 'https://my-portfolio-1wml5keje-ayanakdofficial-2293s-projects.vercel.app',
     github: 'https://github.com/codewithayana/my-portfolio-next.js',
     techStack: [
       { icon: SiNestjs, name: 'Nest.js', color: '#e34c26' },
